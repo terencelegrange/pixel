@@ -323,6 +323,8 @@ export default function DiagramEditor({
         if (!res.ok) throw new Error("Failed");
         const { version } = await res.json();
         const parsed = JSON.parse(version.content);
+        const restoredGridSize = parsed.appState?.gridSize ?? null;
+        setGridEnabled(restoredGridSize !== null);
         excalidrawAPI.updateScene({
           elements: parsed.elements ?? [],
           appState: {

@@ -539,7 +539,7 @@ export const STENCIL_GROUPS: StencilGroup[] = [
       {
         id: "iot-device",
         label: "IoT Device",
-        emoji: "📡",
+        emoji: "🔌",
         createElement: (x, y) =>
           labeledShape("ellipse", x, y, 100, 80, "IoT Device", "#0c8599", "#e3fafc"),
       },
@@ -596,7 +596,7 @@ export const STENCIL_GROUPS: StencilGroup[] = [
       {
         id: "wifi-ap",
         label: "Wi-Fi AP",
-        emoji: "📡",
+        emoji: "🛜",
         createElement: (x, y) =>
           labeledShape("ellipse", x, y, 100, 80, "Wi-Fi AP", "#2f9e44", "#ebfbee"),
       },
