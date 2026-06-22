@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Settings, Bell, Lock, Globe, ShieldCheck, MessageSquare, ChevronRight, Layers, GitBranch, Gauge } from "lucide-react";
+import { Settings, Bell, Lock, Globe, ShieldCheck, MessageSquare, ChevronRight, Layers, GitBranch, Gauge, Building2, Network, Target, Package2, BarChart2 } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Clickable settings tile
@@ -50,7 +50,56 @@ export default function SettingsPage() {
         </p>
       </div>
 
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+      {/* Reference Data */}
+      <div>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+          Reference Data
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SettingsTile
+            href="/organisations"
+            icon={Building2}
+            iconBg="bg-blue-500"
+            title="Departments"
+            description="Manage the business units and teams that own assets."
+          />
+          <SettingsTile
+            href="/domains"
+            icon={Network}
+            iconBg="bg-teal-500"
+            title="Domains"
+            description="Classify assets by technology domain such as Application or Infrastructure."
+          />
+          <SettingsTile
+            href="/asset-strategy"
+            icon={Target}
+            iconBg="bg-orange-500"
+            title="Asset Strategy"
+            description="Define strategic dispositions such as Adopt, Scale, Replace, or Retire."
+          />
+          <SettingsTile
+            href="/vendors"
+            icon={Package2}
+            iconBg="bg-cyan-600"
+            title="Vendors"
+            description="Register the vendors and suppliers your assets depend on."
+          />
+          <SettingsTile
+            href="/tiers"
+            icon={BarChart2}
+            iconBg="bg-amber-500"
+            title="Tiers"
+            description="Set criticality tiers to capture SLA expectations and support obligations."
+          />
+        </div>
+      </div>
+
+      {/* Configuration */}
+      <div>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+          Configuration
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         <SettingsTile
           href="/settings/roles"
           icon={ShieldCheck}
@@ -117,6 +166,7 @@ export default function SettingsPage() {
           title="Integrations"
           description="Connect third-party services and manage API keys."
         />
+        </div>
       </div>
     </div>
   );

@@ -65,31 +65,6 @@ export const navigationConfig: NavGroup[] = [
     title: "Manage",
     items: [
       {
-        label: "Departments",
-        href: "/organisations",
-        icon: "Building2",
-      },
-      {
-        label: "Domains",
-        href: "/domains",
-        icon: "Layers",
-      },
-      {
-        label: "Asset Strategy",
-        href: "/asset-strategy",
-        icon: "Target",
-      },
-      {
-        label: "Vendors",
-        href: "/vendors",
-        icon: "Package2",
-      },
-      {
-        label: "Tier",
-        href: "/tiers",
-        icon: "Gauge",
-      },
-      {
         label: "Users",
         href: "/users",
         icon: "Users",
