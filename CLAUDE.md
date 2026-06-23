@@ -169,6 +169,7 @@ Navigation is driven entirely by `config/navigation.ts`. Icons resolved dynamica
 |---|---|---|
 | Roles | `/settings/roles` | Live |
 | Feedback | `/settings/feedback` | Live — Admin only |
+| Changelog | `/settings/changelog` | Live |
 | General | — | Placeholder |
 | Notifications | — | Placeholder |
 | Security | — | Placeholder |
@@ -302,7 +303,7 @@ DB_NAME=saas_app
 
 > `setupDatabase()` auto-creates all tables and runs idempotent `ALTER TABLE ... ADD COLUMN IF NOT EXISTS` live migrations on every boot.
 > All write operations call `writeAudit()` after the DB write.
-> Covered tables: `assets`, `departments`, `domains`, `asset_strategies`, `tiers`, `vendors`, `users`, `roles`, `projects`
+> Covered tables: `assets`, `departments`, `domains`, `asset_strategies`, `tiers`, `vendors`, `users`, `roles`, `projects`, `changelog`
 
 #### `assets`
 | Column | Type | Notes |
@@ -358,6 +359,18 @@ DB_NAME=saas_app
 | `primary_contact_email` | `VARCHAR(255)` NULL | |
 | `primary_contact_phone` | `VARCHAR(100)` NULL | |
 | `notes` | `TEXT` NULL | |
+| `created_by_id/name` | | Denormalised creator |
+| `created_at` / `updated_at` | `DATETIME` | Auto-managed |
+
+#### `changelog`
+| Column | Type | Notes |
+|---|---|---|
+| `id` | `CHAR(36)` PK | UUID |
+| `version` | `VARCHAR(50)` | e.g. v1.2.0 |
+| `title` | `VARCHAR(500)` | Brief description of the release |
+| `description` | `TEXT` NULL | Detailed release notes |
+| `type` | `ENUM('feature','fix','improvement','breaking')` | Default: `feature` |
+| `released_at` | `DATE` | Release date |
 | `created_by_id/name` | | Denormalised creator |
 | `created_at` / `updated_at` | `DATETIME` | Auto-managed |
 
@@ -459,6 +472,35 @@ DB_NAME=saas_app
 - [x] Project asset dependencies (`/projects/[id]`) — link assets as upstream or downstream; notes per link; edit/remove inline
 - [x] Project dependency flow diagram — ReactFlow visualisation; project hub + upstream/downstream asset nodes; animated directional edges; lazy-loaded
 - [x] Documentation page (`/docs`) — Server Component; renders `CLAUDE.md` via `react-markdown` + `remark-gfm`; sticky TOC sidebar built from `##` headings; custom component renderers for tables, code blocks, blockquotes
+- [x] Changelog (`/settings/changelog`) — CRUD for release notes; fields: version, title, type (feature/fix/improvement/breaking), release date, description; audited
+
+## Test Suite
+
+### Commands
+```bash
+npm test                  # unit + ui tests (no DB required)
+npm run test:integration  # integration tests (requires DB + .env.test)
+npm run test:all          # all three project suites
+```
+
+### Configuration
+- **Jest 29** with three projects: `unit`, `integration`, `ui`
+- `tsconfig.test.json` — overrides to CommonJS + node moduleResolution for ts-jest
+- `jest.config.ts` — three-project config with path alias `@/*` → `<rootDir>/*`
+- `jest.setup.ts` — imports `@testing-library/jest-dom` for the ui project
+- `.env.test` — integration DB credentials (gitignored); point to `pixxel_dev` DB
+
+### Coverage
+- **Unit tests** (`__tests__/unit/`) — ~151 tests; all ~20 API routes + `lib/audit` + `lib/auth`; DB mocked
+- **Integration tests** (`__tests__/integration/`) — 14 tests; auth round-trip, user/role/vendor/asset CRUD against real DB
+- **UI tests** (`__tests__/ui/`) — 35 tests; Button, Input, Modal, LoginForm, RegisterForm, AuthContext, ThemeContext
+
+### Key patterns
+- `jest.mock('@/lib/db', ...)` and `jest.mock('@/lib/audit', ...)` in every unit test
+- `NextRequest` constructed directly; route handlers called as `POST(req, { params })`
+- bcryptjs mocked in auth unit tests
+- `@jest-environment jsdom` docblock on `lib/auth.test.ts` (uses localStorage)
+- Integration tests: `config({ path: '.env.test' })` first, then dynamic imports for routes
 
 ## Not Yet Implemented
 
