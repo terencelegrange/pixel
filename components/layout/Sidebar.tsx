@@ -125,7 +125,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               </svg>
             </div>
             <span className="text-base font-bold text-slate-900 tracking-tight dark:text-slate-100">
-              Pixel
+              Pixxel
             </span>
           </div>
           {/* Mobile close */}

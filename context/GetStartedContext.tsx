@@ -2,7 +2,7 @@
 
 import { createContext, useCallback, useContext, useEffect, useState } from "react";
 
-const STORAGE_KEY = "pixel_getstarted_hidden";
+const STORAGE_KEY = "pixxel_getstarted_hidden";
 
 export interface GetStartedStep {
   key: string;

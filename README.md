@@ -1,8 +1,8 @@
-# Pixel
+# Pixxel
 
 **Enterprise Architecture Repository Platform**
 
-Pixel is an open-source web application for registering and managing your organisation's technology assets. It gives you a centralised inventory of every application in your portfolio — capturing ownership, lifecycle stage, dependencies, technology tier, and governance metadata — so your architecture practice has a single source of truth.
+Pixxel is an open-source web application for registering and managing your organisation's technology assets. It gives you a centralised inventory of every application in your portfolio — capturing ownership, lifecycle stage, dependencies, technology tier, and governance metadata — so your architecture practice has a single source of truth.
 
 ---
 
@@ -48,15 +48,15 @@ Pixel is an open-source web application for registering and managing your organi
 ## Installation
 
 ```bash
-git clone https://github.com/terencelegrange/pixel.git
-cd pixel
+git clone https://github.com/terencelegrange/pixxel.git
+cd pixxel
 npm install
 ```
 
 ### 1. Create the database
 
 ```sql
-CREATE DATABASE pixel CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE DATABASE pixxel CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
 ```
 
 ### 2. Configure environment variables
@@ -72,7 +72,7 @@ DB_HOST=localhost
 DB_PORT=3306
 DB_USER=your_db_user
 DB_PASSWORD=your_db_password
-DB_NAME=pixel
+DB_NAME=pixxel
 ```
 
 > `.env.local` is gitignored and must never be committed.
@@ -99,7 +99,7 @@ npm start
 ## Project structure
 
 ```
-pixel/
+pixxel/
 ├── app/
 │   ├── (auth)/          # Login and register pages
 │   ├── (dashboard)/     # All protected app routes

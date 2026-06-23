@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import RegisterForm from "@/components/auth/RegisterForm";
 
-export const metadata: Metadata = { title: "Create Account — Pixel" };
+export const metadata: Metadata = { title: "Create Account — Pixxel" };
 
 export default function RegisterPage() {
   return (

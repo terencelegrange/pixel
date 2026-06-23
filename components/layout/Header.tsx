@@ -71,7 +71,7 @@ export default function Header({ onMenuToggle }: HeaderProps) {
 
       {/* Logo / Brand (visible on mobile) */}
       <span className="text-base font-semibold text-slate-900 lg:hidden dark:text-slate-100">
-        Pixel
+        Pixxel
       </span>
 
       {/* Search bar */}

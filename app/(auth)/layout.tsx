@@ -10,7 +10,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
             <rect x="11" y="11" width="9" height="9" rx="2" fill="white" fillOpacity="0.12" stroke="white" strokeOpacity="0.4" strokeWidth="1"/>
           </svg>
         </div>
-        <span className="text-xl font-bold text-slate-900">Pixel</span>
+        <span className="text-xl font-bold text-slate-900">Pixxel</span>
       </div>
       <div className="w-full max-w-sm rounded-2xl border border-slate-200 bg-white p-8 shadow-sm">
         {children}

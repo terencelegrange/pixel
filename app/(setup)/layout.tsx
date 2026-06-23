@@ -15,7 +15,7 @@ export default function SetupLayout({
             <rect x="11" y="11" width="9" height="9" rx="2" fill="white" fillOpacity="0.12" stroke="white" strokeOpacity="0.4" strokeWidth="1"/>
           </svg>
         </div>
-        <span className="text-xl font-bold text-slate-900">Pixel</span>
+        <span className="text-xl font-bold text-slate-900">Pixxel</span>
         <span className="text-sm text-slate-500">Setup Wizard</span>
       </div>
 
