@@ -1,0 +1,43 @@
+import { NextRequest } from 'next/server'
+
+jest.mock('@/lib/db', () => ({
+  setupDatabase: jest.fn().mockResolvedValue(undefined),
+  getDb: jest.fn(),
+  resetPool: jest.fn(),
+}))
+jest.mock('@/lib/audit', () => ({ writeAudit: jest.fn().mockResolvedValue(undefined) }))
+
+import { getDb } from '@/lib/db'
+import { GET, POST } from '@/app/api/asset-strategy/route'
+
+const mockExecute = jest.fn()
+beforeEach(() => {
+  jest.clearAllMocks()
+  ;(getDb as jest.Mock).mockReturnValue({ execute: mockExecute })
+})
+
+describe('GET /api/asset-strategy', () => {
+  it('returns 200 with strategies list', async () => {
+    mockExecute.mockResolvedValueOnce([[{ id: 's1', name: 'Emerging', description: null, sort_order: 1, created_by_id: 'u1', created_by_name: 'Admin', created_at: new Date(), updated_at: new Date() }]])
+    const res = await GET()
+    expect(res.status).toBe(200)
+    expect((await res.json()).strategies).toHaveLength(1)
+  })
+})
+
+describe('POST /api/asset-strategy', () => {
+  const makeReq = (body: object) => new NextRequest('http://localhost/api/asset-strategy', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  })
+
+  it('returns 400 when name missing', async () => {
+    const res = await POST(makeReq({ userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 201 on success', async () => {
+    mockExecute.mockResolvedValueOnce([{}])
+    const res = await POST(makeReq({ name: 'Emerging', sortOrder: 1, userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(201)
+  })
+})

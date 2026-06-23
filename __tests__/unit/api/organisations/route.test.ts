@@ -1,0 +1,50 @@
+import { NextRequest } from 'next/server'
+
+jest.mock('@/lib/db', () => ({
+  setupDatabase: jest.fn().mockResolvedValue(undefined),
+  getDb: jest.fn(),
+  resetPool: jest.fn(),
+}))
+jest.mock('@/lib/audit', () => ({ writeAudit: jest.fn().mockResolvedValue(undefined) }))
+
+import { getDb } from '@/lib/db'
+import { GET, POST } from '@/app/api/organisations/route'
+
+const mockExecute = jest.fn()
+beforeEach(() => {
+  jest.clearAllMocks()
+  ;(getDb as jest.Mock).mockReturnValue({ execute: mockExecute })
+})
+
+describe('GET /api/organisations', () => {
+  it('returns 200 with departments list', async () => {
+    mockExecute.mockResolvedValueOnce([[{ id: 'd1', name: 'IT', description: null, status: 'Published', created_by_id: 'u1', created_by_name: 'Admin', created_at: new Date(), updated_at: new Date() }]])
+    const res = await GET()
+    expect(res.status).toBe(200)
+    expect((await res.json()).departments).toHaveLength(1)
+  })
+})
+
+describe('POST /api/organisations', () => {
+  const makeReq = (body: object) => new NextRequest('http://localhost/api/organisations', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  })
+
+  it('returns 400 when name missing', async () => {
+    const res = await POST(makeReq({ userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 409 when name already exists', async () => {
+    mockExecute.mockResolvedValueOnce([[{ id: 'existing' }]])
+    const res = await POST(makeReq({ name: 'Finance', userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(409)
+  })
+
+  it('returns 201 on success', async () => {
+    mockExecute.mockResolvedValueOnce([[]])   // uniqueness check - no existing
+    mockExecute.mockResolvedValueOnce([{}])   // INSERT
+    const res = await POST(makeReq({ name: 'Finance', userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(201)
+  })
+})
