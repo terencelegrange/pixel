@@ -77,7 +77,7 @@ function SectionHeading({ children }: { children: React.ReactNode }) {
   return (
     <div className="col-span-2 flex items-center gap-3 pt-1">
       <p className="text-xs font-semibold uppercase tracking-wider text-slate-400">{children}</p>
-      <div className="flex-1 border-t border-slate-100" />
+      <div className="flex-1 border-t border-slate-100 dark:border-slate-800" />
     </div>
   );
 }
@@ -128,7 +128,7 @@ function VendorModal({
     >
       <form onSubmit={handleSubmit} noValidate>
         {generalError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
             {generalError}
           </div>
         )}
@@ -187,11 +187,11 @@ function VendorModal({
             value={form.primaryContactName} onChange={(e) => set("primaryContactName", e.target.value)} />
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Role</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
             <select
               value={form.primaryContactRole}
               onChange={(e) => set("primaryContactRole", e.target.value)}
-              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500"
+              className="h-10 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               <option value="">— select role —</option>
               {CONTACT_ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
@@ -210,16 +210,16 @@ function VendorModal({
           <SectionHeading>Notes</SectionHeading>
 
           <div className="col-span-2 flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Notes</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes</label>
             <textarea rows={3} value={form.notes} placeholder="Contract details, account numbers, additional context…"
               onChange={(e) => set("notes", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
           </div>
 
         </div>
 
-        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" isLoading={isSaving}>
             {editing ? "Save changes" : "Add Vendor"}
@@ -327,12 +327,12 @@ export default function VendorsPage() {
           placeholder="Search by name, contact, email, country…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-9 w-full max-w-sm rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="h-9 w-full max-w-sm rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
         />
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:bg-slate-900 dark:border-slate-700">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -344,8 +344,8 @@ export default function VendorsPage() {
             <Button variant="secondary" size="sm" onClick={fetchData}>Retry</Button>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
-            <Package2 className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400 dark:text-slate-500">
+            <Package2 className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">
               {vendors.length === 0 ? "No vendors added yet" : "No vendors match your search"}
             </p>
@@ -357,8 +357,8 @@ export default function VendorsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Vendor</th>
                   <th className="hidden px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 sm:table-cell">Primary Contact</th>
@@ -368,16 +368,16 @@ export default function VendorsPage() {
                   <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
                 {filtered.map((vendor) => (
-                  <tr key={vendor.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={vendor.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100">
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
                           <Package2 className="h-4 w-4 text-slate-500" />
                         </div>
                         <div>
-                          <p className="font-medium text-slate-900">{vendor.name}</p>
+                          <p className="font-medium text-slate-900 dark:text-slate-100">{vendor.name}</p>
                           {vendor.website && (
                             <a href={vendor.website} target="_blank" rel="noopener noreferrer"
                               className="inline-flex items-center gap-1 text-xs text-brand-600 hover:underline"
@@ -419,14 +419,14 @@ export default function VendorsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => { setEditing(vendor); setModalOpen(true); }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
                           aria-label={`Edit ${vendor.name}`}
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => { setDeleteTarget(vendor); setDeleteError(null); }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
                           aria-label={`Delete ${vendor.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -464,7 +464,7 @@ export default function VendorsPage() {
               <AlertTriangle className="h-5 w-5 text-red-500" />
             </div>
             <div>
-              <p className="text-sm text-slate-700">
+              <p className="text-sm text-slate-700 dark:text-slate-300">
                 Are you sure you want to delete{" "}
                 <span className="font-semibold">{deleteTarget?.name}</span>?
                 Any assets linked to this vendor will be unassigned.

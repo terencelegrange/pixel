@@ -27,19 +27,19 @@ const DependencyFlow = dynamic(() => import("@/components/projects/DependencyFlo
 // Constants
 // ---------------------------------------------------------------------------
 const STATUS_STYLES: Record<ProjectStatus, string> = {
-  "Active":    "bg-emerald-50 text-emerald-700",
-  "On Hold":   "bg-amber-50 text-amber-700",
-  "Completed": "bg-blue-50 text-blue-700",
-  "Cancelled": "bg-slate-100 text-slate-500",
+  "Active":    "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  "On Hold":   "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  "Completed": "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "Cancelled": "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
 };
 
 const LIFECYCLE_STYLES: Record<string, string> = {
-  Proposed:         "bg-slate-100 text-slate-600",
-  Approved:         "bg-blue-50 text-blue-700",
-  "In Development": "bg-amber-50 text-amber-700",
-  Production:       "bg-emerald-50 text-emerald-700",
-  Sunset:           "bg-orange-50 text-orange-700",
-  Retired:          "bg-red-50 text-red-600",
+  Proposed:         "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+  Approved:         "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "In Development": "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  Production:       "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  Sunset:           "bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  Retired:          "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400",
 };
 
 // ---------------------------------------------------------------------------
@@ -90,16 +90,16 @@ function LinkAssetModal({
     } finally { setIsSaving(false); }
   }
 
-  const fieldCls = "h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1";
+  const fieldCls = "h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500";
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title="Link Asset" maxWidth="max-w-md">
       <div className="flex flex-col gap-4">
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">{error}</div>
         )}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700">Asset</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Asset</label>
           <select value={selected} onChange={(e) => setSelected(e.target.value)} className={fieldCls}>
             <option value="">— Select an asset —</option>
             {assets.map((a) => (
@@ -108,7 +108,7 @@ function LinkAssetModal({
           </select>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700">Dependency type</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Dependency type</label>
           <div className="grid grid-cols-2 gap-2">
             {(["downstream", "upstream"] as DependencyType[]).map((d) => (
               <button
@@ -119,7 +119,7 @@ function LinkAssetModal({
                   "flex items-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors",
                   depType === d
                     ? "border-brand-500 bg-brand-50 text-brand-700"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300",
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400",
                 ].join(" ")}
               >
                 {d === "downstream"
@@ -130,23 +130,23 @@ function LinkAssetModal({
               </button>
             ))}
           </div>
-          <p className="text-xs text-slate-400 mt-1">
+          <p className="text-xs text-slate-400 dark:text-slate-500 mt-1">
             {depType === "downstream"
               ? "This project produces outputs that this asset consumes or depends on."
               : "This asset feeds data or services that this project consumes."}
           </p>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700">Notes <span className="text-slate-400 font-normal">(optional)</span></label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 resize-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
             placeholder="Describe the relationship…"
           />
         </div>
-        <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <div className="flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
           <Button isLoading={isSaving} onClick={handleSubmit}>Link asset</Button>
         </div>
@@ -201,10 +201,10 @@ function EditLinkModal({
     <Modal isOpen={isOpen} onClose={onClose} title={`Edit — ${asset?.assetName ?? ""}`} maxWidth="max-w-md">
       <div className="flex flex-col gap-4">
         {error && (
-          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">{error}</div>
+          <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">{error}</div>
         )}
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700">Dependency type</label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Dependency type</label>
           <div className="grid grid-cols-2 gap-2">
             {(["downstream", "upstream"] as DependencyType[]).map((d) => (
               <button
@@ -215,7 +215,7 @@ function EditLinkModal({
                   "flex items-center gap-2 rounded-lg border-2 px-3 py-2.5 text-sm font-medium transition-colors",
                   depType === d
                     ? "border-brand-500 bg-brand-50 text-brand-700"
-                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300",
+                    : "border-slate-200 bg-white text-slate-600 hover:border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-400",
                 ].join(" ")}
               >
                 {d === "downstream"
@@ -228,15 +228,15 @@ function EditLinkModal({
           </div>
         </div>
         <div className="flex flex-col gap-1.5">
-          <label className="text-sm font-medium text-slate-700">Notes <span className="text-slate-400 font-normal">(optional)</span></label>
+          <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Notes <span className="text-slate-400 dark:text-slate-500 font-normal">(optional)</span></label>
           <textarea
             value={notes}
             onChange={(e) => setNotes(e.target.value)}
             rows={2}
-            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 resize-none"
+            className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
         </div>
-        <div className="flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <div className="flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
           <Button variant="secondary" onClick={onClose}>Cancel</Button>
           <Button isLoading={isSaving} onClick={handleSubmit}>Save changes</Button>
         </div>
@@ -269,30 +269,30 @@ function AssetRow({
   const isUpstream = pa.dependencyType === "upstream";
 
   return (
-    <div className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50 transition-colors">
-      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500">
+    <div className="flex items-center gap-4 px-5 py-3.5 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
+      <div className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
         <AssetIcon name={pa.assetIcon ?? "Server"} className="h-4 w-4" />
       </div>
       <div className="flex-1 min-w-0">
         <div className="flex flex-wrap items-center gap-2">
-          <Link href={`/assets/${pa.assetId}`} className="text-sm font-medium text-slate-900 hover:text-brand-600 transition-colors">
+          <Link href={`/assets/${pa.assetId}`} className="text-sm font-medium text-slate-900 dark:text-slate-100 hover:text-brand-600 transition-colors">
             {pa.assetName}
           </Link>
           <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${LIFECYCLE_STYLES[pa.lifecycleStatus] ?? "bg-slate-100 text-slate-500"}`}>
             {pa.lifecycleStatus}
           </span>
           {pa.tierName && (
-            <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500">
+            <span className="inline-flex items-center rounded-full bg-slate-100 px-2 py-0.5 text-xs text-slate-500 dark:bg-slate-800 dark:text-slate-400">
               {pa.tierName}
             </span>
           )}
         </div>
-        {pa.notes && <p className="mt-0.5 text-xs text-slate-400 truncate">{pa.notes}</p>}
+        {pa.notes && <p className="mt-0.5 text-xs text-slate-400 dark:text-slate-500 truncate">{pa.notes}</p>}
       </div>
       <div className="flex items-center gap-2 flex-shrink-0">
         <span className={[
           "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-medium",
-          isUpstream ? "bg-violet-50 text-violet-700" : "bg-sky-50 text-sky-700",
+          isUpstream ? "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400" : "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
         ].join(" ")}>
           {isUpstream
             ? <ArrowUpFromLine className="h-3 w-3" />

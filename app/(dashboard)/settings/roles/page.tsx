@@ -25,9 +25,9 @@ function roleToForm(r: Role): RoleForm {
 }
 
 const PERMISSION_BADGE: Record<PermissionLevel, string> = {
-  "read-only": "bg-slate-100 text-slate-600",
-  "member":    "bg-blue-50 text-blue-700",
-  "admin":     "bg-violet-50 text-violet-700",
+  "read-only": "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+  "member":    "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "admin":     "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
 };
 
 const PERMISSION_LABELS: Record<PermissionLevel, string> = {
@@ -75,7 +75,7 @@ function RoleModal({
     <Modal isOpen={isOpen} onClose={onClose} title={editing ? `Edit — ${editing.name}` : "Add Role"} maxWidth="max-w-lg">
       <form onSubmit={handleSubmit} noValidate>
         {generalError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
             {generalError}
           </div>
         )}
@@ -86,20 +86,20 @@ function RoleModal({
             error={nameError} autoFocus required
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Description</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
             <textarea
               rows={3} value={form.description}
               placeholder="What can users with this role do?"
               onChange={(e) => set("description", e.target.value)}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Permission level</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Permission level</label>
             <select
               value={form.permissionLevel}
               onChange={(e) => set("permissionLevel", e.target.value as PermissionLevel)}
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1"
+              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               <option value="read-only">Read-Only — view only, no changes</option>
               <option value="member">Member — add and manage assets</option>
@@ -107,7 +107,7 @@ function RoleModal({
             </select>
           </div>
         </div>
-        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" isLoading={isSaving}>{editing ? "Save changes" : "Add Role"}</Button>
         </div>
@@ -214,12 +214,12 @@ export default function RolesPage() {
           placeholder="Search by name or description…"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-9 w-full max-w-sm rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="h-9 w-full max-w-sm rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
         />
       </div>
 
       {/* Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -231,8 +231,8 @@ export default function RolesPage() {
             <Button variant="secondary" size="sm" onClick={fetchData}>Retry</Button>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
-            <ShieldCheck className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400 dark:text-slate-500">
+            <ShieldCheck className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">
               {roles.length === 0 ? "No roles defined yet" : "No roles match your search"}
             </p>
@@ -244,8 +244,8 @@ export default function RolesPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Role</th>
                   <th className="hidden px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 sm:table-cell">Description</th>
@@ -253,15 +253,15 @@ export default function RolesPage() {
                   <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
                 {filtered.map((role) => (
-                  <tr key={role.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={role.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100">
-                          <ShieldCheck className="h-4 w-4 text-slate-500" />
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                          <ShieldCheck className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                         </div>
-                        <p className="font-medium text-slate-900">{role.name}</p>
+                        <p className="font-medium text-slate-900 dark:text-slate-100">{role.name}</p>
                       </div>
                     </td>
                     <td className="hidden px-6 py-4 text-sm text-slate-600 sm:table-cell max-w-xs">
@@ -278,14 +278,14 @@ export default function RolesPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => { setEditing(role); setModalOpen(true); }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
                           aria-label={`Edit ${role.name}`}
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => { setDeleteTarget(role); setDeleteError(null); }}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
                           aria-label={`Delete ${role.name}`}
                         >
                           <Trash2 className="h-4 w-4" />

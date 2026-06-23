@@ -32,19 +32,19 @@ const STATUSES: SupportStatus[] = [
 ];
 
 const STATUS_STYLES: Record<SupportStatus, string> = {
-  "New":                  "bg-blue-50 text-blue-700",
-  "Acknowledged":         "bg-amber-50 text-amber-700",
-  "Under Review":         "bg-violet-50 text-violet-700",
-  "Will Fix":             "bg-emerald-50 text-emerald-700",
-  "Will Not Implement":   "bg-red-50 text-red-600",
-  "Completed":            "bg-slate-100 text-slate-500",
+  "New":                  "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "Acknowledged":         "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  "Under Review":         "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  "Will Fix":             "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  "Will Not Implement":   "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400",
+  "Completed":            "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
 };
 
 const TYPE_STYLES: Record<string, string> = {
-  "Feature Request": "bg-violet-50 text-violet-700",
-  "Report Request":  "bg-sky-50 text-sky-700",
-  "Bug":             "bg-red-50 text-red-600",
-  "Other":           "bg-slate-100 text-slate-500",
+  "Feature Request": "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  "Report Request":  "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+  "Bug":             "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400",
+  "Other":           "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
 };
 
 // ---------------------------------------------------------------------------
@@ -99,7 +99,7 @@ export default function FeedbackPage() {
 
   const hasFilter = filterStatus || filterType;
 
-  const selectCls = "h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500";
+  const selectCls = "h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100";
 
   return (
     <div className="space-y-6">
@@ -146,7 +146,7 @@ export default function FeedbackPage() {
       )}
 
       {/* Table */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -159,15 +159,15 @@ export default function FeedbackPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
-            <MessageSquare className="h-10 w-10 text-slate-300" />
+            <MessageSquare className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">
               {requests.length === 0 ? "No feedback submitted yet" : "No items match your filters"}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {filtered.map((r) => (
-              <div key={r.id} className="px-6 py-4 hover:bg-slate-50 transition-colors">
+              <div key={r.id} className="px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 <div className="flex flex-col gap-2 sm:flex-row sm:items-start sm:justify-between">
                   {/* Left: subject + meta */}
                   <div className="flex-1 min-w-0">
@@ -175,7 +175,7 @@ export default function FeedbackPage() {
                       <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${TYPE_STYLES[r.type] ?? "bg-slate-100 text-slate-500"}`}>
                         {r.type}
                       </span>
-                      <p className="text-sm font-medium text-slate-900 truncate">{r.subject}</p>
+                      <p className="text-sm font-medium text-slate-900 dark:text-slate-100 truncate">{r.subject}</p>
                     </div>
                     {r.description && (
                       <p className="mt-1 text-xs text-slate-500 line-clamp-2">{r.description}</p>

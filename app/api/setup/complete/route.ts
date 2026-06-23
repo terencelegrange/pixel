@@ -71,8 +71,11 @@ export async function POST(req: Request) {
   );
 
   try {
-    // 3. Bootstrap the schema (lazy pool will read from site.config.json)
-    const { setupDatabase, getDb } = await import("@/lib/db");
+    // 3. Bootstrap the schema using the credentials just written to site.config.json.
+    //    Reset any existing pool so it is recreated with the new credentials
+    //    rather than the stale env vars that were loaded when the server started.
+    const { setupDatabase, getDb, resetPool } = await import("@/lib/db");
+    resetPool();
     await setupDatabase();
 
     // 4. Create the first admin user

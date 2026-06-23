@@ -62,6 +62,18 @@ const STEP_META: Omit<GetStartedStep, "count" | "done">[] = [
     description: "Register the vendors and suppliers your assets depend on.",
     href: "/vendors",
   },
+  {
+    key: "assets",
+    label: "Add my first asset",
+    description: "Register your first asset in the registry — requires the reference data above.",
+    href: "/assets",
+  },
+  {
+    key: "projects",
+    label: "Add my first project",
+    description: "Create a project to group related assets, initiatives, or changes.",
+    href: "/projects",
+  },
 ];
 
 export function GetStartedProvider({ children }: { children: React.ReactNode }) {

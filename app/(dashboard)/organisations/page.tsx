@@ -39,12 +39,12 @@ function formatDateTime(iso: string) {
 
 function StatusBadge({ status }: { status: DeptStatus }) {
   return status === "Published" ? (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
       <span className="h-1.5 w-1.5 rounded-full bg-emerald-500" />
       Published
     </span>
   ) : (
-    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500">
+    <span className="inline-flex items-center gap-1.5 rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-800 dark:text-slate-400">
       <span className="h-1.5 w-1.5 rounded-full bg-slate-400" />
       Unpublished
     </span>
@@ -214,7 +214,7 @@ export default function OrganisationsPage() {
       </div>
 
       {/* Table card */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoadingData ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -226,8 +226,8 @@ export default function OrganisationsPage() {
             <Button variant="secondary" size="sm" onClick={fetchDepartments}>Retry</Button>
           </div>
         ) : departments.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
-            <Building2 className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400 dark:text-slate-500">
+            <Building2 className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">No departments yet</p>
             <p className="text-xs text-slate-400">Add your first department to get started.</p>
             <Button size="sm" onClick={openCreate}>
@@ -237,8 +237,8 @@ export default function OrganisationsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">
                     Name
@@ -257,16 +257,16 @@ export default function OrganisationsPage() {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
                 {departments.map((dept) => (
-                  <tr key={dept.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={dept.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
                         <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-brand-50">
                           <Building2 className="h-4 w-4 text-brand-600" />
                         </div>
                         <div>
-                          <p className="font-medium text-slate-900">{dept.name}</p>
+                          <p className="font-medium text-slate-900 dark:text-slate-100">{dept.name}</p>
                           <p className="text-xs text-slate-400 sm:hidden">
                             {dept.description ?? <span className="italic">No description</span>}
                           </p>
@@ -290,14 +290,14 @@ export default function OrganisationsPage() {
                       <div className="flex items-center justify-end gap-2">
                         <button
                           onClick={() => openEdit(dept)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
                           aria-label={`Edit ${dept.name}`}
                         >
                           <Pencil className="h-4 w-4" />
                         </button>
                         <button
                           onClick={() => openDelete(dept)}
-                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                          className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
                           aria-label={`Delete ${dept.name}`}
                         >
                           <Trash2 className="h-4 w-4" />
@@ -330,7 +330,7 @@ export default function OrganisationsPage() {
       >
         <form onSubmit={handleSave} className="flex flex-col gap-4" noValidate>
           {formErrors.general && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
               {formErrors.general}
             </div>
           )}
@@ -346,7 +346,7 @@ export default function OrganisationsPage() {
           />
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Description <span className="font-normal text-slate-400">(optional)</span>
             </label>
             <textarea
@@ -354,16 +354,16 @@ export default function OrganisationsPage() {
               placeholder="Brief description of this department's responsibilities..."
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
           </div>
 
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Status</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
             <select
               value={form.status}
               onChange={(e) => setForm((f) => ({ ...f, status: e.target.value as DeptStatus }))}
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1"
+              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               <option value="Unpublished">Unpublished</option>
               <option value="Published">Published</option>

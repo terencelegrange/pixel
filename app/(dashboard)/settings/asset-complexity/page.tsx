@@ -134,7 +134,7 @@ export default function AssetComplexityPage() {
         </Button>
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -151,8 +151,8 @@ export default function AssetComplexityPage() {
             <Button size="sm" onClick={openCreate}><Plus className="h-4 w-4" /> Add Complexity</Button>
           </div>
         ) : (
-          <table className="min-w-full divide-y divide-slate-200">
-            <thead className="bg-slate-50">
+          <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+            <thead className="bg-slate-50 dark:bg-slate-800/50">
               <tr>
                 <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 w-12">#</th>
                 <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Name</th>
@@ -160,13 +160,13 @@ export default function AssetComplexityPage() {
                 <th className="px-6 py-3 text-right text-xs font-semibold uppercase tracking-wider text-slate-500">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-slate-100 bg-white">
+            <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
               {items.map((item) => (
-                <tr key={item.id} className="hover:bg-slate-50 transition-colors">
+                <tr key={item.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                   <td className="px-6 py-4 text-sm text-slate-400">
                     {item.sortOrder ?? <span className="italic text-slate-200">—</span>}
                   </td>
-                  <td className="px-6 py-4 font-medium text-slate-900">{item.name}</td>
+                  <td className="px-6 py-4 font-medium text-slate-900 dark:text-slate-100">{item.name}</td>
                   <td className="hidden px-6 py-4 text-sm text-slate-500 md:table-cell">
                     {item.description || <span className="italic text-slate-300">—</span>}
                   </td>
@@ -174,14 +174,14 @@ export default function AssetComplexityPage() {
                     <div className="flex items-center justify-end gap-2">
                       <button
                         onClick={() => openEdit(item)}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
                         aria-label="Edit"
                       >
                         <Pencil className="h-4 w-4" />
                       </button>
                       <button
                         onClick={() => { setDeleteTarget(item); setDeleteError(null); }}
-                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                        className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
                         aria-label="Delete"
                       >
                         <Trash2 className="h-4 w-4" />
@@ -208,7 +208,7 @@ export default function AssetComplexityPage() {
       >
         <div className="flex flex-col gap-4">
           {formError && (
-            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+            <div className="rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
               {formError}
             </div>
           )}
@@ -221,7 +221,7 @@ export default function AssetComplexityPage() {
             autoFocus
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">
               Description <span className="font-normal text-slate-400">(optional)</span>
             </label>
             <textarea
@@ -229,7 +229,7 @@ export default function AssetComplexityPage() {
               value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
               placeholder="Brief description of this complexity level…"
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
             />
           </div>
           <Input

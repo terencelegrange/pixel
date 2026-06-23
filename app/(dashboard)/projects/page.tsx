@@ -15,10 +15,10 @@ import { Project, ProjectStatus } from "@/types";
 const STATUSES: ProjectStatus[] = ["Active", "On Hold", "Completed", "Cancelled"];
 
 const STATUS_STYLES: Record<ProjectStatus, string> = {
-  "Active":    "bg-emerald-50 text-emerald-700",
-  "On Hold":   "bg-amber-50 text-amber-700",
-  "Completed": "bg-blue-50 text-blue-700",
-  "Cancelled": "bg-slate-100 text-slate-500",
+  "Active":    "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  "On Hold":   "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  "Completed": "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "Cancelled": "bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400",
 };
 
 interface ProjectForm {
@@ -70,13 +70,13 @@ function ProjectModal({
     finally { setIsSaving(false); }
   }
 
-  const fieldCls = "h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1";
+  const fieldCls = "h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500";
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={initial ? "Edit Project" : "New Project"} maxWidth="max-w-lg">
       <form onSubmit={handleSubmit} noValidate>
         {generalError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
             {generalError}
           </div>
         )}
@@ -91,33 +91,33 @@ function ProjectModal({
             required
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Description</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Description</label>
             <textarea
               value={form.description}
               onChange={(e) => set("description", e.target.value)}
               rows={3}
-              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none"
+              className="w-full rounded-lg border border-slate-300 bg-white px-3 py-2 text-sm text-slate-900 placeholder:text-slate-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 resize-none dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
               placeholder="What is this project trying to achieve?"
             />
           </div>
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Status</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Status</label>
             <select value={form.status} onChange={(e) => set("status", e.target.value as ProjectStatus)} className={fieldCls}>
               {STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
             </select>
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-slate-700">Start date</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Start date</label>
               <input type="date" value={form.startDate} onChange={(e) => set("startDate", e.target.value)} className={fieldCls} />
             </div>
             <div className="flex flex-col gap-1.5">
-              <label className="text-sm font-medium text-slate-700">End date</label>
+              <label className="text-sm font-medium text-slate-700 dark:text-slate-300">End date</label>
               <input type="date" value={form.endDate} onChange={(e) => set("endDate", e.target.value)} className={fieldCls} />
             </div>
           </div>
         </div>
-        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4 dark:border-slate-800">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" isLoading={isSaving}>{initial ? "Save changes" : "Create project"}</Button>
         </div>
@@ -216,7 +216,7 @@ export default function ProjectsPage() {
     return new Date(d + "T00:00:00").toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" });
   }
 
-  const selectCls = "h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500";
+  const selectCls = "h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100";
 
   return (
     <div className="space-y-6">
@@ -241,7 +241,7 @@ export default function ProjectsPage() {
             placeholder="Search projects…"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="h-9 w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+            className="h-9 w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
           />
           <select value={filterStatus} onChange={(e) => setFilterStatus(e.target.value)} className={selectCls}>
             <option value="">All statuses</option>
@@ -259,7 +259,7 @@ export default function ProjectsPage() {
       )}
 
       {/* List */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -272,15 +272,15 @@ export default function ProjectsPage() {
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
-            <FolderKanban className="h-10 w-10 text-slate-300" />
+            <FolderKanban className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">
               {projects.length === 0 ? "No projects yet — create one to get started" : "No projects match your filters"}
             </p>
           </div>
         ) : (
-          <div className="divide-y divide-slate-100">
+          <div className="divide-y divide-slate-100 dark:divide-slate-800">
             {filtered.map((p) => (
-              <div key={p.id} className="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 transition-colors">
+              <div key={p.id} className="group flex items-center gap-4 px-6 py-4 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                 {/* Icon */}
                 <div className="flex h-10 w-10 flex-shrink-0 items-center justify-center rounded-lg bg-brand-50">
                   <FolderKanban className="h-5 w-5 text-brand-600" />
@@ -289,7 +289,7 @@ export default function ProjectsPage() {
                 {/* Content */}
                 <div className="flex-1 min-w-0">
                   <div className="flex flex-wrap items-center gap-2">
-                    <Link href={`/projects/${p.id}`} className="font-medium text-slate-900 hover:text-brand-600 transition-colors">
+                    <Link href={`/projects/${p.id}`} className="font-medium text-slate-900 dark:text-slate-100 hover:text-brand-600 transition-colors">
                       {p.name}
                     </Link>
                     <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${STATUS_STYLES[p.status]}`}>
@@ -297,9 +297,9 @@ export default function ProjectsPage() {
                     </span>
                   </div>
                   {p.description && (
-                    <p className="mt-0.5 text-sm text-slate-500 truncate">{p.description}</p>
+                    <p className="mt-0.5 text-sm text-slate-500 dark:text-slate-400 truncate">{p.description}</p>
                   )}
-                  <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-slate-400">
+                  <div className="mt-1 flex flex-wrap items-center gap-3 text-xs text-slate-400 dark:text-slate-500">
                     <span>{p.assetCount} asset{p.assetCount !== 1 ? "s" : ""}</span>
                     {p.startDate && <span>Start: {fmtDate(p.startDate)}</span>}
                     {p.endDate && <span>End: {fmtDate(p.endDate)}</span>}
@@ -310,21 +310,21 @@ export default function ProjectsPage() {
                 <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
                   <button
                     onClick={() => { setEditTarget(p); setModalOpen(true); }}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
                     aria-label={`Edit ${p.name}`}
                   >
                     <Pencil className="h-4 w-4" />
                   </button>
                   <button
                     onClick={() => { setDeleteTarget(p); setDeleteError(null); }}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 transition-colors"
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-red-50 hover:text-red-600 dark:hover:bg-red-950/40 dark:hover:text-red-400 transition-colors"
                     aria-label={`Delete ${p.name}`}
                   >
                     <Trash2 className="h-4 w-4" />
                   </button>
                   <Link
                     href={`/projects/${p.id}`}
-                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 transition-colors"
+                    className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-700 dark:hover:bg-slate-800 dark:hover:text-slate-300 transition-colors"
                     aria-label={`Open ${p.name}`}
                   >
                     <ChevronRight className="h-4 w-4" />

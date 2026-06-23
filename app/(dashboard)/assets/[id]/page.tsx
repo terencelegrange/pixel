@@ -19,21 +19,21 @@ import { Asset, AuditLog, AssetComplexity, AssetStrategy, AssetType, BusinessCap
 // Badge styles (duplicated from list page — could be shared in future)
 // ─────────────────────────────────────────────────────────────────────────────
 const LIFECYCLE_STYLES: Record<LifecycleStatus, string> = {
-  Proposed:         "bg-slate-100 text-slate-600",
-  Approved:         "bg-blue-50 text-blue-700",
-  "In Development": "bg-amber-50 text-amber-700",
-  Production:       "bg-emerald-50 text-emerald-700",
-  Sunset:           "bg-orange-50 text-orange-700",
-  Retired:          "bg-red-50 text-red-600",
+  Proposed:         "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+  Approved:         "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "In Development": "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  Production:       "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  Sunset:           "bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  Retired:          "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400",
 };
 
 const TYPE_STYLES: Record<AssetType, string> = {
-  SaaS:           "bg-violet-50 text-violet-700",
-  "On-Premise":   "bg-blue-50 text-blue-700",
-  Hybrid:         "bg-teal-50 text-teal-700",
-  Cloud:          "bg-sky-50 text-sky-700",
-  "Open Source":  "bg-emerald-50 text-emerald-700",
-  Other:          "bg-slate-100 text-slate-600",
+  SaaS:           "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  "On-Premise":   "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  Hybrid:         "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+  Cloud:          "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+  "Open Source":  "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  Other:          "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
 };
 
 const ACTION_STYLES = {

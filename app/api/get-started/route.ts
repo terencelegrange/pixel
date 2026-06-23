@@ -8,11 +8,13 @@ export async function GET() {
     const db = getDb();
     const [rows] = await db.execute<mysql.RowDataPacket[]>(`
       SELECT
-        (SELECT COUNT(*) FROM departments)     AS departments,
-        (SELECT COUNT(*) FROM domains)         AS domains,
+        (SELECT COUNT(*) FROM departments)      AS departments,
+        (SELECT COUNT(*) FROM domains)          AS domains,
         (SELECT COUNT(*) FROM asset_strategies) AS strategies,
-        (SELECT COUNT(*) FROM tiers)           AS tiers,
-        (SELECT COUNT(*) FROM vendors)         AS vendors
+        (SELECT COUNT(*) FROM tiers)            AS tiers,
+        (SELECT COUNT(*) FROM vendors)          AS vendors,
+        (SELECT COUNT(*) FROM assets)           AS assets,
+        (SELECT COUNT(*) FROM projects)         AS projects
     `);
     const row = rows[0];
     return NextResponse.json({
@@ -21,6 +23,8 @@ export async function GET() {
       strategies:  Number(row.strategies),
       tiers:       Number(row.tiers),
       vendors:     Number(row.vendors),
+      assets:      Number(row.assets),
+      projects:    Number(row.projects),
     });
   } catch (err) {
     console.error("[GET /api/get-started]", err);

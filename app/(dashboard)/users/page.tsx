@@ -27,9 +27,9 @@ interface UserForm {
 const ROLES = ["Admin", "Member", "Viewer"];
 
 const ROLE_STYLES: Record<string, string> = {
-  Admin:  "bg-violet-50 text-violet-700",
-  Member: "bg-slate-100 text-slate-600",
-  Viewer: "bg-sky-50 text-sky-700",
+  Admin:  "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  Member: "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+  Viewer: "bg-sky-50 text-sky-700 dark:bg-blue-900/30 dark:text-blue-400",
 };
 
 // ---------------------------------------------------------------------------
@@ -77,7 +77,7 @@ function CreateUserModal({
     <Modal isOpen={isOpen} onClose={onClose} title="Add User" maxWidth="max-w-md">
       <form onSubmit={handleSubmit} noValidate>
         {generalError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
             {generalError}
           </div>
         )}
@@ -109,17 +109,17 @@ function CreateUserModal({
             showToggle
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Role</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
             <select
               value={role}
               onChange={(e) => setRole(e.target.value)}
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1"
+              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>
           </div>
         </div>
-        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 pt-4">
+        <div className="mt-6 flex justify-end gap-3 border-t border-slate-100 dark:border-slate-800 pt-4">
           <Button type="button" variant="secondary" onClick={onClose}>Cancel</Button>
           <Button type="submit" isLoading={isSaving}>Add User</Button>
         </div>
@@ -165,7 +165,7 @@ function EditUserModal({
     <Modal isOpen={isOpen} onClose={onClose} title={`Edit — ${editing?.name ?? ""}`} maxWidth="max-w-md">
       <form onSubmit={handleSubmit} noValidate>
         {generalError && (
-          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+          <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600 dark:bg-red-950/50 dark:border-red-900 dark:text-red-400">
             {generalError}
           </div>
         )}
@@ -179,11 +179,11 @@ function EditUserModal({
             autoFocus
           />
           <div className="flex flex-col gap-1.5">
-            <label className="text-sm font-medium text-slate-700">Role</label>
+            <label className="text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
             <select
               value={form.role}
               onChange={(e) => setForm((f) => ({ ...f, role: e.target.value }))}
-              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1"
+              className="h-9 w-full rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-900 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-brand-500 focus-visible:ring-offset-1 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100"
             >
               {ROLES.map((r) => <option key={r} value={r}>{r}</option>)}
             </select>

@@ -9,21 +9,21 @@ import { AssetIcon } from "@/components/assets/AssetModal";
 import { Asset, AssetType, LifecycleStatus } from "@/types";
 
 const LIFECYCLE_STYLES: Record<LifecycleStatus, string> = {
-  Proposed:         "bg-slate-100 text-slate-600",
-  Approved:         "bg-blue-50 text-blue-700",
-  "In Development": "bg-amber-50 text-amber-700",
-  Production:       "bg-emerald-50 text-emerald-700",
-  Sunset:           "bg-orange-50 text-orange-700",
-  Retired:          "bg-red-50 text-red-600",
+  Proposed:         "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
+  Approved:         "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  "In Development": "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-400",
+  Production:       "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  Sunset:           "bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-400",
+  Retired:          "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400",
 };
 
 const TYPE_STYLES: Record<AssetType, string> = {
-  SaaS:           "bg-violet-50 text-violet-700",
-  "On-Premise":   "bg-blue-50 text-blue-700",
-  Hybrid:         "bg-teal-50 text-teal-700",
-  Cloud:          "bg-sky-50 text-sky-700",
-  "Open Source":  "bg-emerald-50 text-emerald-700",
-  Other:          "bg-slate-100 text-slate-600",
+  SaaS:           "bg-violet-50 text-violet-700 dark:bg-violet-900/30 dark:text-violet-400",
+  "On-Premise":   "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400",
+  Hybrid:         "bg-teal-50 text-teal-700 dark:bg-teal-900/30 dark:text-teal-400",
+  Cloud:          "bg-sky-50 text-sky-700 dark:bg-sky-900/30 dark:text-sky-400",
+  "Open Source":  "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400",
+  Other:          "bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-400",
 };
 
 function Badge({ label, style }: { label: string; style: string }) {
@@ -86,11 +86,11 @@ export default function MyAssetsPage() {
           placeholder="Search by name, code, vendor..."
           value={search}
           onChange={(e) => setSearch(e.target.value)}
-          className="h-9 w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500"
+          className="h-9 w-full max-w-xs rounded-lg border border-slate-300 bg-white px-3 text-sm placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-100 dark:placeholder:text-slate-500"
         />
       </div>
 
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoading ? (
           <div className="flex items-center justify-center py-20">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -102,8 +102,8 @@ export default function MyAssetsPage() {
             <Button variant="secondary" size="sm" onClick={fetchData}>Retry</Button>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400">
-            <UserCheck className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-20 text-slate-400 dark:text-slate-500">
+            <UserCheck className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">
               {assets.length === 0
                 ? "You are not assigned as an architect on any assets yet"
@@ -112,34 +112,34 @@ export default function MyAssetsPage() {
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-slate-200">
-              <thead className="bg-slate-50">
+            <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+              <thead className="bg-slate-50 dark:bg-slate-800/50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Asset</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Asset</th>
                   <th className="hidden px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 sm:table-cell">Type</th>
                   <th className="hidden px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 md:table-cell">Tier</th>
                   <th className="hidden px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 lg:table-cell">Strategy</th>
-                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500">Lifecycle</th>
+                  <th className="px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">Lifecycle</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-100 bg-white">
+              <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-800 dark:bg-slate-900">
                 {filtered.map((asset) => (
-                  <tr key={asset.id} className="hover:bg-slate-50 transition-colors">
+                  <tr key={asset.id} className="hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-3">
-                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100">
-                          <AssetIcon name={asset.icon} className="h-4 w-4 text-slate-500" />
+                        <div className="flex h-8 w-8 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                          <AssetIcon name={asset.icon} className="h-4 w-4 text-slate-500 dark:text-slate-400" />
                         </div>
                         <div>
                           <div className="flex items-center gap-2">
                             <Link
                               href={`/assets/${asset.id}`}
-                              className="font-medium text-slate-900 hover:text-brand-600 hover:underline"
+                              className="font-medium text-slate-900 hover:text-brand-600 hover:underline dark:text-slate-100"
                             >
                               {asset.name}
                             </Link>
                             {asset.shortCode && (
-                              <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-slate-500">
+                              <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-slate-500 dark:bg-slate-800 dark:text-slate-400">
                                 {asset.shortCode}
                               </span>
                             )}
@@ -161,11 +161,11 @@ export default function MyAssetsPage() {
                     <td className="hidden px-6 py-4 sm:table-cell">
                       <Badge label={asset.type} style={TYPE_STYLES[asset.type]} />
                     </td>
-                    <td className="hidden px-6 py-4 text-sm text-slate-600 md:table-cell">
-                      {asset.tierName || <span className="italic text-slate-300">—</span>}
+                    <td className="hidden px-6 py-4 text-sm text-slate-600 dark:text-slate-400 md:table-cell">
+                      {asset.tierName || <span className="italic text-slate-300 dark:text-slate-600">—</span>}
                     </td>
-                    <td className="hidden px-6 py-4 text-sm text-slate-600 lg:table-cell">
-                      {asset.strategyName || <span className="italic text-slate-300">—</span>}
+                    <td className="hidden px-6 py-4 text-sm text-slate-600 dark:text-slate-400 lg:table-cell">
+                      {asset.strategyName || <span className="italic text-slate-300 dark:text-slate-600">—</span>}
                     </td>
                     <td className="px-6 py-4">
                       <Badge label={asset.lifecycleStatus} style={LIFECYCLE_STYLES[asset.lifecycleStatus]} />
