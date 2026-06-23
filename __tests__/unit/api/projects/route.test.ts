@@ -1,0 +1,50 @@
+import { NextRequest } from 'next/server'
+
+jest.mock('@/lib/db', () => ({
+  setupDatabase: jest.fn().mockResolvedValue(undefined),
+  getDb: jest.fn(),
+  resetPool: jest.fn(),
+}))
+jest.mock('@/lib/audit', () => ({ writeAudit: jest.fn().mockResolvedValue(undefined) }))
+
+import { getDb } from '@/lib/db'
+import { GET, POST } from '@/app/api/projects/route'
+
+const mockExecute = jest.fn()
+beforeEach(() => {
+  jest.clearAllMocks()
+  ;(getDb as jest.Mock).mockReturnValue({ execute: mockExecute })
+})
+
+describe('GET /api/projects', () => {
+  it('returns projects list with asset count', async () => {
+    mockExecute.mockResolvedValueOnce([[{ id: 'p1', name: 'Migration', description: null, status: 'Active', start_date: null, end_date: null, asset_count: 2, created_by_id: 'u1', created_by_name: 'Admin', created_at: new Date(), updated_at: new Date() }]])
+    const res = await GET()
+    expect(res.status).toBe(200)
+    const body = await res.json()
+    expect(body.projects[0].id).toBe('p1')
+    expect(body.projects[0].assetCount).toBe(2)
+  })
+})
+
+describe('POST /api/projects', () => {
+  const makeReq = (body: object) => new NextRequest('http://localhost/api/projects', {
+    method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
+  })
+
+  it('returns 400 when name is missing', async () => {
+    const res = await POST(makeReq({ userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 400 for invalid status', async () => {
+    const res = await POST(makeReq({ name: 'Project X', status: 'Unknown', userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(400)
+  })
+
+  it('returns 201 on success', async () => {
+    mockExecute.mockResolvedValueOnce([{}])
+    const res = await POST(makeReq({ name: 'Migration Project', status: 'Active', userId: 'u1', userName: 'Admin' }))
+    expect(res.status).toBe(201)
+  })
+})
