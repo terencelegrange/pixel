@@ -6,6 +6,7 @@ import {
   PieChart, Pie, Cell, Tooltip, Legend, ResponsiveContainer,
   BarChart, Bar, XAxis, YAxis, CartesianGrid,
 } from "recharts";
+import { useTheme } from "@/context/ThemeContext";
 
 const LIFECYCLE_COLOURS: Record<string, string> = {
   Proposed:         "#94a3b8",
@@ -16,20 +17,9 @@ const LIFECYCLE_COLOURS: Record<string, string> = {
   Retired:          "#ef4444",
 };
 
-interface LifecycleStat {
-  status: string;
-  count: number;
-}
-
-interface TierStat {
-  tier: string;
-  count: number;
-}
-
-interface StrategyStat {
-  strategy: string;
-  count: number;
-}
+interface LifecycleStat  { status: string;   count: number; }
+interface TierStat       { tier: string;     count: number; }
+interface StrategyStat   { strategy: string; count: number; }
 
 const TIER_COLOURS = [
   "#6d28d9", "#2563eb", "#0891b2", "#059669",
@@ -41,11 +31,41 @@ const STRATEGY_COLOURS = [
   "#14b8a6", "#f59e0b", "#10b981", "#ef4444",
 ];
 
+// ── Chart theme tokens ─────────────────────────────────────────────────────────
+function useChartTheme(isDark: boolean) {
+  return {
+    grid:    isDark ? "#1e293b" : "#f1f5f9",
+    tick:    isDark ? "#64748b" : "#94a3b8",
+    tooltip: {
+      backgroundColor: isDark ? "#0f172a" : "#ffffff",
+      border:          `1px solid ${isDark ? "#334155" : "#e2e8f0"}`,
+      color:           isDark ? "#f1f5f9" : "#1e293b",
+      borderRadius:    "8px",
+      fontSize:        "12px",
+    },
+    legendText: isDark ? "#94a3b8" : "#475569",
+    legendValue: isDark ? "#e2e8f0" : "#1e293b",
+  };
+}
+
+// ── Stat icon background — light colour needs a dark equivalent ───────────────
+const ICON_BG_DARK: Record<string, string> = {
+  "bg-violet-50":  "dark:bg-violet-900/30",
+  "bg-emerald-50": "dark:bg-emerald-900/30",
+  "bg-amber-50":   "dark:bg-amber-900/30",
+  "bg-blue-50":    "dark:bg-blue-900/30",
+  "bg-brand-50":   "dark:bg-brand-900/30",
+};
+
 export default function DashboardPage() {
-  const [publishedDepts, setPublishedDepts] = useState<number | null>(null);
-  const [activeProjects, setActiveProjects] = useState<number | null>(null);
+  const { theme } = useTheme();
+  const isDark = theme === "dark";
+  const ct = useChartTheme(isDark);
+
+  const [publishedDepts, setPublishedDepts]     = useState<number | null>(null);
+  const [activeProjects, setActiveProjects]     = useState<number | null>(null);
   const [assetsByLifecycle, setAssetsByLifecycle] = useState<LifecycleStat[]>([]);
-  const [assetsByTier, setAssetsByTier] = useState<TierStat[]>([]);
+  const [assetsByTier, setAssetsByTier]         = useState<TierStat[]>([]);
   const [assetsByStrategy, setAssetsByStrategy] = useState<StrategyStat[]>([]);
 
   useEffect(() => {
@@ -75,8 +95,8 @@ export default function DashboardPage() {
       value: totalAssets === 0 && assetsByLifecycle.length === 0 ? "—" : String(totalAssets),
       change: "Registered assets",
       icon: Server,
-      color: "text-violet-600",
-      bg: "bg-violet-50",
+      color: "text-violet-600 dark:text-violet-400",
+      bg: "bg-violet-50 dark:bg-violet-900/30",
       loading: publishedDepts === null,
     },
     {
@@ -84,8 +104,8 @@ export default function DashboardPage() {
       value: String(assetsByLifecycle.find((s) => s.status === "Production")?.count ?? 0),
       change: "Live assets",
       icon: TrendingUp,
-      color: "text-emerald-600",
-      bg: "bg-emerald-50",
+      color: "text-emerald-600 dark:text-emerald-400",
+      bg: "bg-emerald-50 dark:bg-emerald-900/30",
       loading: publishedDepts === null,
     },
     {
@@ -93,8 +113,8 @@ export default function DashboardPage() {
       value: String(assetsByLifecycle.find((s) => s.status === "In Development")?.count ?? 0),
       change: "Being built",
       icon: Users,
-      color: "text-amber-600",
-      bg: "bg-amber-50",
+      color: "text-amber-600 dark:text-amber-400",
+      bg: "bg-amber-50 dark:bg-amber-900/30",
       loading: publishedDepts === null,
     },
     {
@@ -102,8 +122,8 @@ export default function DashboardPage() {
       value: publishedDepts === null ? "—" : String(publishedDepts),
       change: "Active departments",
       icon: Building2,
-      color: "text-blue-600",
-      bg: "bg-blue-50",
+      color: "text-blue-600 dark:text-blue-400",
+      bg: "bg-blue-50 dark:bg-blue-900/30",
       loading: publishedDepts === null,
     },
     {
@@ -111,8 +131,8 @@ export default function DashboardPage() {
       value: activeProjects === null ? "—" : String(activeProjects),
       change: "In-flight projects",
       icon: FolderKanban,
-      color: "text-brand-600",
-      bg: "bg-brand-50",
+      color: "text-brand-600 dark:text-brand-400",
+      bg: "bg-brand-50 dark:bg-brand-900/30",
       loading: activeProjects === null,
     },
   ];
@@ -132,20 +152,20 @@ export default function DashboardPage() {
         {stats.map((s) => (
           <div
             key={s.label}
-            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm"
+            className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm dark:border-slate-700 dark:bg-slate-900"
           >
             <div className="flex items-center justify-between">
-              <p className="text-sm font-medium text-slate-500">{s.label}</p>
+              <p className="text-sm font-medium text-slate-500 dark:text-slate-400">{s.label}</p>
               <div className={`rounded-lg p-2 ${s.bg}`}>
                 <s.icon className={`h-4 w-4 ${s.color}`} />
               </div>
             </div>
             {s.loading ? (
-              <div className="mt-3 h-8 w-12 animate-pulse rounded bg-slate-100" />
+              <div className="mt-3 h-8 w-12 animate-pulse rounded bg-slate-100 dark:bg-slate-700" />
             ) : (
               <p className="mt-3 text-2xl font-bold text-slate-900 dark:text-slate-100">{s.value}</p>
             )}
-            <p className="mt-1 flex items-center gap-1 text-xs text-slate-500 font-medium">
+            <p className="mt-1 flex items-center gap-1 text-xs font-medium text-slate-500 dark:text-slate-400">
               <ArrowUpRight className="h-3 w-3" />
               {s.change}
             </p>
@@ -155,12 +175,13 @@ export default function DashboardPage() {
 
       {/* Charts row */}
       <div className="grid gap-4 lg:grid-cols-3">
+
         {/* Pie chart — assets by lifecycle */}
-        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="font-semibold text-slate-800">Assets by Lifecycle Stage</h2>
+        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200">Assets by Lifecycle Stage</h2>
           {assetsByLifecycle.length === 0 ? (
-            <div className="mt-4 flex h-48 items-center justify-center rounded-lg bg-slate-50 border border-dashed border-slate-300">
-              <p className="text-sm text-slate-400">No assets registered yet</p>
+            <div className="mt-4 flex h-48 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50">
+              <p className="text-sm text-slate-400 dark:text-slate-500">No assets registered yet</p>
             </div>
           ) : (
             <div className="mt-4 h-64">
@@ -185,10 +206,12 @@ export default function DashboardPage() {
                   </Pie>
                   <Tooltip
                     formatter={(value: number, name: string) => [`${value} asset${value !== 1 ? "s" : ""}`, name]}
-                    contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0", fontSize: "12px" }}
+                    contentStyle={ct.tooltip}
                   />
                   <Legend
-                    formatter={(value) => <span className="text-xs text-slate-600">{value}</span>}
+                    formatter={(value) => (
+                      <span style={{ fontSize: "12px", color: ct.legendText }}>{value}</span>
+                    )}
                   />
                 </PieChart>
               </ResponsiveContainer>
@@ -197,23 +220,23 @@ export default function DashboardPage() {
         </div>
 
         {/* Bar chart — assets by tier */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="font-semibold text-slate-800">Assets by Tier</h2>
+        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200">Assets by Tier</h2>
           {assetsByTier.length === 0 ? (
-            <div className="mt-4 flex h-48 items-center justify-center rounded-lg bg-slate-50 border border-dashed border-slate-300">
-              <p className="text-sm text-slate-400">No tier data yet</p>
+            <div className="mt-4 flex h-48 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50">
+              <p className="text-sm text-slate-400 dark:text-slate-500">No tier data yet</p>
             </div>
           ) : (
             <>
               <div className="mt-4 h-44">
                 <ResponsiveContainer width="100%" height="100%">
                   <BarChart data={assetsByTier} margin={{ top: 4, right: 4, left: -20, bottom: 0 }}>
-                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
+                    <CartesianGrid strokeDasharray="3 3" stroke={ct.grid} />
                     <XAxis dataKey="tier" tick={false} axisLine={false} tickLine={false} />
-                    <YAxis tick={{ fontSize: 11, fill: "#94a3b8" }} tickLine={false} axisLine={false} allowDecimals={false} />
+                    <YAxis tick={{ fontSize: 11, fill: ct.tick }} tickLine={false} axisLine={false} allowDecimals={false} />
                     <Tooltip
                       formatter={(value: number) => [`${value} asset${value !== 1 ? "s" : ""}`, "Count"]}
-                      contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0", fontSize: "12px" }}
+                      contentStyle={ct.tooltip}
                     />
                     <Bar dataKey="count" radius={[4, 4, 0, 0]}>
                       {assetsByTier.map((entry, i) => (
@@ -231,8 +254,8 @@ export default function DashboardPage() {
                       className="h-2.5 w-2.5 flex-shrink-0 rounded-sm"
                       style={{ backgroundColor: TIER_COLOURS[i % TIER_COLOURS.length] }}
                     />
-                    <span className="flex-1 text-xs text-slate-600">{entry.tier}</span>
-                    <span className="text-xs font-semibold text-slate-800">{entry.count}</span>
+                    <span className="flex-1 text-xs text-slate-600 dark:text-slate-400">{entry.tier}</span>
+                    <span className="text-xs font-semibold text-slate-800 dark:text-slate-200">{entry.count}</span>
                   </li>
                 ))}
               </ul>
@@ -245,24 +268,24 @@ export default function DashboardPage() {
       <div className="grid gap-4 lg:grid-cols-3">
 
         {/* Active projects stat card */}
-        <div className="rounded-xl border border-slate-200 bg-white p-6 shadow-sm flex flex-col justify-between">
+        <div className="flex flex-col justify-between rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <div>
             <div className="flex items-center justify-between">
-              <h2 className="font-semibold text-slate-800">Active Projects</h2>
-              <div className="rounded-lg bg-brand-50 p-2">
-                <FolderKanban className="h-5 w-5 text-brand-600" />
+              <h2 className="font-semibold text-slate-800 dark:text-slate-200">Active Projects</h2>
+              <div className="rounded-lg bg-brand-50 p-2 dark:bg-brand-900/30">
+                <FolderKanban className="h-5 w-5 text-brand-600 dark:text-brand-400" />
               </div>
             </div>
-            <p className="mt-1 text-xs text-slate-400">Projects currently in flight</p>
+            <p className="mt-1 text-xs text-slate-400 dark:text-slate-500">Projects currently in flight</p>
           </div>
           {activeProjects === null ? (
-            <div className="mt-6 h-12 w-20 animate-pulse rounded bg-slate-100" />
+            <div className="mt-6 h-12 w-20 animate-pulse rounded bg-slate-100 dark:bg-slate-700" />
           ) : (
             <div className="mt-6">
-              <p className="text-5xl font-bold text-slate-900 dark:text-slate-100 tabular-nums">
+              <p className="text-5xl font-bold tabular-nums text-slate-900 dark:text-slate-100">
                 {activeProjects}
               </p>
-              <p className="mt-2 text-xs text-slate-400">
+              <p className="mt-2 text-xs text-slate-400 dark:text-slate-500">
                 {activeProjects === 0
                   ? "No active projects — create one to get started"
                   : activeProjects === 1
@@ -274,11 +297,11 @@ export default function DashboardPage() {
         </div>
 
         {/* Pie chart — assets by strategy */}
-        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-          <h2 className="font-semibold text-slate-800">Assets by Strategy</h2>
+        <div className="lg:col-span-2 rounded-xl border border-slate-200 bg-white p-6 shadow-sm dark:border-slate-700 dark:bg-slate-900">
+          <h2 className="font-semibold text-slate-800 dark:text-slate-200">Assets by Strategy</h2>
           {assetsByStrategy.length === 0 ? (
-            <div className="mt-4 flex h-48 items-center justify-center rounded-lg bg-slate-50 border border-dashed border-slate-300">
-              <p className="text-sm text-slate-400">No strategy data yet</p>
+            <div className="mt-4 flex h-48 items-center justify-center rounded-lg border border-dashed border-slate-300 bg-slate-50 dark:border-slate-700 dark:bg-slate-800/50">
+              <p className="text-sm text-slate-400 dark:text-slate-500">No strategy data yet</p>
             </div>
           ) : (
             <div className="mt-4 h-64">
@@ -303,10 +326,12 @@ export default function DashboardPage() {
                   </Pie>
                   <Tooltip
                     formatter={(value: number, name: string) => [`${value} asset${value !== 1 ? "s" : ""}`, name]}
-                    contentStyle={{ borderRadius: "8px", border: "1px solid #e2e8f0", fontSize: "12px" }}
+                    contentStyle={ct.tooltip}
                   />
                   <Legend
-                    formatter={(value) => <span className="text-xs text-slate-600">{value}</span>}
+                    formatter={(value) => (
+                      <span style={{ fontSize: "12px", color: ct.legendText }}>{value}</span>
+                    )}
                   />
                 </PieChart>
               </ResponsiveContainer>
