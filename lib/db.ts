@@ -53,29 +53,32 @@ function getDbCredentials(): { host: string; port: number; user: string; passwor
 }
 
 // ---------------------------------------------------------------------------
-// Singleton pool
+// Singleton pool — stored on globalThis so Next.js HMR does not create a
+// fresh pool (and leak connections) every time this module is re-evaluated.
 // ---------------------------------------------------------------------------
-let pool: Pool | null = null;
+const g = globalThis as typeof globalThis & {
+  _dbPool?: Pool;
+  _dbInitPromise?: Promise<void> | null;
+};
 
 function getPool(): Pool {
-  if (!pool) {
+  if (!g._dbPool) {
     const creds = getDbCredentials();
     if (!creds) {
       throw new Error(
         "Database credentials not configured. Complete /setup first or set DB_* environment variables."
       );
     }
-    pool = mysql.createPool({
+    g._dbPool = mysql.createPool({
       ...creds,
       waitForConnections: true,
       connectionLimit: 10,
       queueLimit: 0,
-      // Keep alive so the pool doesn't drop idle connections
       enableKeepAlive: true,
       keepAliveInitialDelay: 10000,
     });
   }
-  return pool;
+  return g._dbPool;
 }
 
 export function getDb(): Pool {
@@ -83,8 +86,8 @@ export function getDb(): Pool {
 }
 
 export function resetPool(): void {
-  pool = null;
-  initPromise = null;
+  g._dbPool = undefined;
+  g._dbInitPromise = null;
 }
 
 // ---------------------------------------------------------------------------
@@ -96,16 +99,14 @@ export function resetPool(): void {
 // On failure the promise is cleared so the next call can retry
 // (e.g. after a transient connection error).
 // ---------------------------------------------------------------------------
-let initPromise: Promise<void> | null = null;
-
 export function setupDatabase(): Promise<void> {
-  if (!initPromise) {
-    initPromise = runSetup().catch((err) => {
-      initPromise = null; // allow retry on next invocation
+  if (!g._dbInitPromise) {
+    g._dbInitPromise = runSetup().catch((err) => {
+      g._dbInitPromise = null; // allow retry on next invocation
       return Promise.reject(err);
     });
   }
-  return initPromise;
+  return g._dbInitPromise;
 }
 
 // ---------------------------------------------------------------------------
@@ -612,6 +613,44 @@ async function runSetup(): Promise<void> {
                                                                              ON UPDATE CURRENT_TIMESTAMP,
       PRIMARY KEY (id),
       KEY idx_changelog_released_at (released_at)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS app_settings (
+      \`key\`       VARCHAR(255)  NOT NULL,
+      \`value\`     TEXT          NULL,
+      updated_at  DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (\`key\`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS plantuml_diagrams (
+      id              CHAR(36)     NOT NULL,
+      name            VARCHAR(255) NOT NULL,
+      description     TEXT         NULL,
+      project_id      CHAR(36)     NULL,
+      created_by_id   CHAR(36)     NOT NULL,
+      created_by_name VARCHAR(255) NOT NULL,
+      created_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      updated_at      DATETIME     NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
+  `);
+
+  await db.execute(`
+    CREATE TABLE IF NOT EXISTS plantuml_versions (
+      id              CHAR(36)      NOT NULL,
+      diagram_id      CHAR(36)      NOT NULL,
+      version_number  INT UNSIGNED  NOT NULL,
+      source          LONGTEXT      NOT NULL,
+      created_by_id   CHAR(36)      NOT NULL,
+      created_by_name VARCHAR(255)  NOT NULL,
+      created_at      DATETIME      NOT NULL DEFAULT CURRENT_TIMESTAMP,
+      PRIMARY KEY (id),
+      UNIQUE KEY uq_plantuml_version (diagram_id, version_number),
+      KEY idx_plantuml_versions_diagram (diagram_id)
     ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci
   `);
 
