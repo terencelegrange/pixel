@@ -11,10 +11,11 @@ import {
 } from "lucide-react";
 import ReactFlow, { Node, Edge, NodeTypes, EdgeTypes, Background, useNodesState, useEdgesState } from "reactflow";
 import "reactflow/dist/style.css";
-import { AssetDependency } from "@/types";
+import { AssetDependency, DependencyConnectionType } from "@/types";
 import DependencyNode, { DependencyNodeData } from "@/components/dependencies/DependencyNode";
 import DependencyEdge, { DependencyEdgeData } from "@/components/dependencies/DependencyEdge";
 import AddDependencyModal from "@/components/dependencies/AddDependencyModal";
+import DependencyPanel from "@/components/dependencies/DependencyPanel";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
@@ -46,6 +47,15 @@ const ACTION_STYLES = {
   CREATE: "bg-emerald-50 text-emerald-700",
   UPDATE: "bg-amber-50 text-amber-700",
   DELETE: "bg-red-50 text-red-600",
+};
+
+const TYPE_BADGE: Record<DependencyConnectionType, string> = {
+  'API':             'bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300',
+  'Database':        'bg-purple-50 text-purple-700 dark:bg-purple-900/30 dark:text-purple-300',
+  'File Transfer':   'bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300',
+  'Event / Message': 'bg-green-50 text-green-700 dark:bg-green-900/30 dark:text-green-300',
+  'UI Embed':        'bg-pink-50 text-pink-700 dark:bg-pink-900/30 dark:text-pink-300',
+  'Other':           'bg-slate-100 text-slate-600 dark:bg-slate-800 dark:text-slate-300',
 };
 
 // ─────────────────────────────────────────────────────────────────────────────
@@ -232,6 +242,7 @@ export default function AssetDetailPage() {
   const [depAddOpen, setDepAddOpen] = useState(false);
   const [depDeleteId, setDepDeleteId] = useState<string | null>(null);
   const [isDeletingDep, setIsDeletingDep] = useState(false);
+  const [editingDep, setEditingDep] = useState<AssetDependency | null>(null);
   const [allAssets, setAllAssets] = useState<Pick<Asset, "id" | "name" | "shortCode">[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -849,7 +860,9 @@ export default function AssetDetailPage() {
                     <Link href={`/assets/${otherId}`} className="flex-1 text-sm font-medium text-slate-800 dark:text-slate-100 hover:text-brand-600 dark:hover:text-brand-400 truncate">
                       {otherName}
                     </Link>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">{d.type}</span>
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_BADGE[d.type]}`}>
+                      {d.type}
+                    </span>
                     <span className="text-xs text-slate-300 dark:text-slate-600">{d.direction}</span>
                     {d.notes && <span className="text-xs text-slate-400 dark:text-slate-500 truncate max-w-[120px]" title={d.notes}>{d.notes}</span>}
                     {user && (
@@ -860,9 +873,14 @@ export default function AssetDetailPage() {
                           <button onClick={() => setDepDeleteId(null)} className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200">No</button>
                         </div>
                       ) : (
-                        <button onClick={() => setDepDeleteId(d.id)} className="text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400">
-                          <Trash2 className="h-3.5 w-3.5" />
-                        </button>
+                        <>
+                          <button onClick={() => setEditingDep(d)} className="text-slate-300 hover:text-brand-500 dark:text-slate-600 dark:hover:text-brand-400">
+                            <Pencil className="h-3.5 w-3.5" />
+                          </button>
+                          <button onClick={() => setDepDeleteId(d.id)} className="text-slate-300 hover:text-red-500 dark:text-slate-600 dark:hover:text-red-400">
+                            <Trash2 className="h-3.5 w-3.5" />
+                          </button>
+                        </>
                       )
                     )}
                   </div>
@@ -888,9 +906,16 @@ export default function AssetDetailPage() {
                     <Link href={`/assets/${otherId}`} className="flex-1 text-sm font-medium text-slate-800 dark:text-slate-100 hover:text-brand-600 dark:hover:text-brand-400 truncate">
                       {otherName}
                     </Link>
-                    <span className="text-xs text-slate-400 dark:text-slate-500">{d.type}</span>
+                    <span className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${TYPE_BADGE[d.type]}`}>
+                      {d.type}
+                    </span>
                     <span className="text-xs text-slate-300 dark:text-slate-600">{d.direction}</span>
                     {d.notes && <span className="text-xs text-slate-400 dark:text-slate-500 truncate max-w-[120px]" title={d.notes}>{d.notes}</span>}
+                    {user && (
+                      <button onClick={() => setEditingDep(d)} className="text-slate-300 hover:text-brand-500 dark:text-slate-600 dark:hover:text-brand-400">
+                        <Pencil className="h-3.5 w-3.5" />
+                      </button>
+                    )}
                   </div>
                 );
               })}
@@ -921,6 +946,17 @@ export default function AssetDetailPage() {
           lockedSourceAssetName={asset.name}
           userId={user.id}
           userName={user.name}
+        />
+      )}
+
+      {editingDep && user && (
+        <DependencyPanel
+          dependency={editingDep}
+          onClose={() => setEditingDep(null)}
+          onUpdated={() => { setEditingDep(null); fetchAll(); }}
+          onDeleted={() => { setEditingDep(null); fetchAll(); }}
+          userId={user.id}
+          userName={user.name ?? ""}
         />
       )}
 
