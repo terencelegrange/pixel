@@ -4,12 +4,18 @@ import ReactMarkdown from "react-markdown";
 import remarkGfm from "remark-gfm";
 import type { Components } from "react-markdown";
 
+export const dynamic = 'force-dynamic';
+
 // ---------------------------------------------------------------------------
 // Read the CLAUDE.md file at request time (server component)
 // ---------------------------------------------------------------------------
 async function getContent(): Promise<string> {
-  const filePath = path.join(process.cwd(), "CLAUDE.md");
-  return readFile(filePath, "utf-8");
+  try {
+    const filePath = path.join(process.cwd(), "CLAUDE.md");
+    return await readFile(filePath, "utf-8");
+  } catch {
+    return "# Documentation\n\nDocumentation is not available in this environment.";
+  }
 }
 
 // ---------------------------------------------------------------------------
