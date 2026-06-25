@@ -24,20 +24,20 @@ const STATUSES: LifecycleStatus[] = [
 ];
 
 const STATUS_HEADER_STYLES: Record<LifecycleStatus, string> = {
-  Proposed:         "text-slate-500",
-  Approved:         "text-blue-600",
-  "In Development": "text-amber-600",
-  Production:       "text-emerald-600",
-  Sunset:           "text-orange-500",
-  Retired:          "text-red-500",
+  Proposed:         "text-slate-500 dark:text-slate-400",
+  Approved:         "text-blue-600 dark:text-blue-400",
+  "In Development": "text-amber-600 dark:text-amber-400",
+  Production:       "text-emerald-600 dark:text-emerald-400",
+  Sunset:           "text-orange-500 dark:text-orange-400",
+  Retired:          "text-red-500 dark:text-red-400",
 };
 
 // Cell colour by count
 function cellStyle(count: number): string {
   if (count === 0) return "";
-  if (count <= 2) return "bg-blue-50 text-blue-700 font-semibold";
-  if (count <= 5) return "bg-indigo-50 text-indigo-700 font-semibold";
-  return "bg-emerald-50 text-emerald-700 font-semibold";
+  if (count <= 2) return "bg-blue-50 text-blue-700 font-semibold dark:bg-blue-900/30 dark:text-blue-300";
+  if (count <= 5) return "bg-indigo-50 text-indigo-700 font-semibold dark:bg-indigo-900/30 dark:text-indigo-300";
+  return "bg-emerald-50 text-emerald-700 font-semibold dark:bg-emerald-900/30 dark:text-emerald-300";
 }
 
 // ---------------------------------------------------------------------------
@@ -52,41 +52,41 @@ function DrillDown({
   onClose: () => void;
 }) {
   const STATUS_BADGE: Record<LifecycleStatus, string> = {
-    Proposed:         "bg-slate-100 text-slate-600",
-    Approved:         "bg-blue-50 text-blue-700",
-    "In Development": "bg-amber-50 text-amber-700",
-    Production:       "bg-emerald-50 text-emerald-700",
-    Sunset:           "bg-orange-50 text-orange-700",
-    Retired:          "bg-red-50 text-red-600",
+    Proposed:         "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
+    Approved:         "bg-blue-50 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300",
+    "In Development": "bg-amber-50 text-amber-700 dark:bg-amber-900/30 dark:text-amber-300",
+    Production:       "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-300",
+    Sunset:           "bg-orange-50 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300",
+    Retired:          "bg-red-50 text-red-600 dark:bg-red-900/30 dark:text-red-400",
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-black/30" onClick={onClose} />
-      <div className="relative w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-xl">
-        <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4">
+      <div className="absolute inset-0 bg-black/40" onClick={onClose} />
+      <div className="relative w-full max-w-md rounded-xl border border-slate-200 bg-white shadow-xl dark:border-slate-700 dark:bg-slate-900">
+        <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4 dark:border-slate-800">
           <div>
-            <p className="text-xs text-slate-400 uppercase tracking-wider font-medium">{capability}</p>
+            <p className="text-xs text-slate-400 uppercase tracking-wider font-medium dark:text-slate-500">{capability}</p>
             <div className="mt-1 flex items-center gap-2">
               <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${STATUS_BADGE[status]}`}>
                 {status}
               </span>
-              <span className="text-sm text-slate-500">{assets.length} asset{assets.length !== 1 ? "s" : ""}</span>
+              <span className="text-sm text-slate-500 dark:text-slate-400">{assets.length} asset{assets.length !== 1 ? "s" : ""}</span>
             </div>
           </div>
-          <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 transition-colors">
+          <button onClick={onClose} className="rounded-lg p-1.5 text-slate-400 hover:bg-slate-100 hover:text-slate-600 transition-colors dark:hover:bg-slate-800 dark:hover:text-slate-200">
             <X className="h-4 w-4" />
           </button>
         </div>
-        <ul className="divide-y divide-slate-100 max-h-80 overflow-y-auto">
+        <ul className="divide-y divide-slate-100 max-h-80 overflow-y-auto dark:divide-slate-800">
           {assets.map((a) => (
             <li key={a.id} className="flex items-center gap-3 px-5 py-3">
-              <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100">
-                <AssetIcon name={a.icon || "Server"} className="h-3.5 w-3.5 text-slate-500" />
+              <div className="flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-lg bg-slate-100 dark:bg-slate-800">
+                <AssetIcon name={a.icon || "Server"} className="h-3.5 w-3.5 text-slate-500 dark:text-slate-400" />
               </div>
               <div className="flex-1 min-w-0">
-                <p className="text-sm font-medium text-slate-900 truncate">{a.name}</p>
-                <p className="text-xs text-slate-400">{a.type}</p>
+                <p className="text-sm font-medium text-slate-900 truncate dark:text-slate-100">{a.name}</p>
+                <p className="text-xs text-slate-400 dark:text-slate-500">{a.type}</p>
               </div>
             </li>
           ))}
@@ -157,7 +157,7 @@ export default function CapabilitiesMatrixPage() {
           <select
             value={selectedSector}
             onChange={(e) => setSelectedSector(e.target.value)}
-            className="h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 self-start"
+            className="h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 self-start dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200"
           >
             <option value="all">All sectors</option>
             {matrix.map((s) => (
@@ -170,17 +170,17 @@ export default function CapabilitiesMatrixPage() {
       {/* Summary chips */}
       {!isLoading && !fetchError && matrix.length > 0 && (
         <div className="flex flex-wrap gap-3">
-          <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm">
-            <span className="font-semibold text-slate-800">{totalCaps}</span>
-            <span className="ml-1.5 text-slate-400">capabilities</span>
+          <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <span className="font-semibold text-slate-800 dark:text-slate-100">{totalCaps}</span>
+            <span className="ml-1.5 text-slate-400 dark:text-slate-500">capabilities</span>
           </div>
-          <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm">
-            <span className="font-semibold text-emerald-700">{coveredCaps}</span>
-            <span className="ml-1.5 text-slate-400">with assets assigned</span>
+          <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <span className="font-semibold text-emerald-700 dark:text-emerald-400">{coveredCaps}</span>
+            <span className="ml-1.5 text-slate-400 dark:text-slate-500">with assets assigned</span>
           </div>
-          <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm">
-            <span className="font-semibold text-slate-400">{totalCaps - coveredCaps}</span>
-            <span className="ml-1.5 text-slate-400">gaps (no assets)</span>
+          <div className="rounded-lg border border-slate-200 bg-white px-4 py-2 text-sm shadow-sm dark:border-slate-700 dark:bg-slate-900">
+            <span className="font-semibold text-slate-400 dark:text-slate-500">{totalCaps - coveredCaps}</span>
+            <span className="ml-1.5 text-slate-400 dark:text-slate-500">gaps (no assets)</span>
           </div>
         </div>
       )}
@@ -197,21 +197,21 @@ export default function CapabilitiesMatrixPage() {
           <Button variant="secondary" size="sm" onClick={fetchData}>Retry</Button>
         </div>
       ) : matrix.length === 0 ? (
-        <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400 rounded-xl border border-slate-200 bg-white shadow-sm">
+        <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400 dark:text-slate-500 rounded-xl border border-slate-200 bg-white shadow-sm dark:border-slate-700 dark:bg-slate-900">
           <p className="text-sm font-medium">No capabilities or sectors configured yet</p>
           <p className="text-xs">Add industry sectors and business capabilities in Settings first.</p>
         </div>
       ) : (
         <div className="space-y-6">
           {visibleSectors.map((sector) => (
-            <div key={sector.id} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+            <div key={sector.id} className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
               {/* Sector header */}
-              <div className="border-b border-slate-100 bg-slate-50 px-5 py-3 flex items-center gap-3">
-                <h2 className="text-sm font-semibold text-slate-700">{sector.name}</h2>
-                <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600">
+              <div className="border-b border-slate-100 bg-slate-50 px-5 py-3 flex items-center gap-3 dark:border-slate-800 dark:bg-slate-800/50">
+                <h2 className="text-sm font-semibold text-slate-700 dark:text-slate-200">{sector.name}</h2>
+                <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-600 dark:bg-slate-700 dark:text-slate-300">
                   {sector.capabilities.length} capabilities
                 </span>
-                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700">
+                <span className="rounded-full bg-emerald-100 px-2 py-0.5 text-xs font-medium text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400">
                   {sector.capabilities.filter((c) => c.total > 0).length} covered
                 </span>
               </div>
@@ -220,8 +220,8 @@ export default function CapabilitiesMatrixPage() {
               <div className="overflow-x-auto">
                 <table className="min-w-full">
                   <thead>
-                    <tr className="border-b border-slate-100">
-                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 w-56">
+                    <tr className="border-b border-slate-100 dark:border-slate-800">
+                      <th className="px-5 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 w-56">
                         Capability
                       </th>
                       {STATUSES.map((s) => (
@@ -232,15 +232,15 @@ export default function CapabilitiesMatrixPage() {
                           {s}
                         </th>
                       ))}
-                      <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-400 w-16">
+                      <th className="px-3 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 w-16">
                         Total
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100">
+                  <tbody className="divide-y divide-slate-100 dark:divide-slate-800">
                     {sector.capabilities.map((cap) => (
-                      <tr key={cap.id} className="hover:bg-slate-50 transition-colors">
-                        <td className="px-5 py-3 text-sm font-medium text-slate-800">
+                      <tr key={cap.id} className="hover:bg-slate-50 transition-colors dark:hover:bg-slate-800/50">
+                        <td className="px-5 py-3 text-sm font-medium text-slate-800 dark:text-slate-100">
                           {cap.name}
                         </td>
                         {STATUSES.map((status) => {
@@ -249,7 +249,7 @@ export default function CapabilitiesMatrixPage() {
                           return (
                             <td key={status} className="px-3 py-3 text-center">
                               {count === 0 ? (
-                                <span className="text-slate-200 text-sm select-none">—</span>
+                                <span className="text-slate-200 dark:text-slate-700 text-sm select-none">—</span>
                               ) : (
                                 <button
                                   onClick={() => setDrillDown({ capability: cap.name, status, assets })}
@@ -264,9 +264,9 @@ export default function CapabilitiesMatrixPage() {
                         })}
                         <td className="px-3 py-3 text-center">
                           {cap.total === 0 ? (
-                            <span className="text-xs text-slate-300">0</span>
+                            <span className="text-xs text-slate-300 dark:text-slate-600">0</span>
                           ) : (
-                            <span className="text-xs font-semibold text-slate-600">{cap.total}</span>
+                            <span className="text-xs font-semibold text-slate-600 dark:text-slate-300">{cap.total}</span>
                           )}
                         </td>
                       </tr>
@@ -278,21 +278,21 @@ export default function CapabilitiesMatrixPage() {
           ))}
 
           {/* Legend */}
-          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400">
-            <span className="font-medium text-slate-500">Count scale:</span>
+          <div className="flex flex-wrap items-center gap-4 text-xs text-slate-400 dark:text-slate-500">
+            <span className="font-medium text-slate-500 dark:text-slate-400">Count scale:</span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="inline-flex items-center justify-center w-6 h-5 rounded-full bg-blue-50 text-blue-700 font-semibold text-xs">1</span>
+              <span className="inline-flex items-center justify-center w-6 h-5 rounded-full bg-blue-50 text-blue-700 font-semibold text-xs dark:bg-blue-900/30 dark:text-blue-300">1</span>
               1–2
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="inline-flex items-center justify-center w-6 h-5 rounded-full bg-indigo-50 text-indigo-700 font-semibold text-xs">3</span>
+              <span className="inline-flex items-center justify-center w-6 h-5 rounded-full bg-indigo-50 text-indigo-700 font-semibold text-xs dark:bg-indigo-900/30 dark:text-indigo-300">3</span>
               3–5
             </span>
             <span className="inline-flex items-center gap-1.5">
-              <span className="inline-flex items-center justify-center w-6 h-5 rounded-full bg-emerald-50 text-emerald-700 font-semibold text-xs">6</span>
+              <span className="inline-flex items-center justify-center w-6 h-5 rounded-full bg-emerald-50 text-emerald-700 font-semibold text-xs dark:bg-emerald-900/30 dark:text-emerald-300">6</span>
               6+
             </span>
-            <span className="ml-2 text-slate-300">Click any count to see the assets</span>
+            <span className="ml-2 text-slate-300 dark:text-slate-600">Click any count to see the assets</span>
           </div>
         </div>
       )}

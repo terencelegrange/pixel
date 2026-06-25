@@ -37,17 +37,17 @@ function groupByDomain(assets: Asset[]): DomainGroup[] {
 }
 
 // ---------------------------------------------------------------------------
-// Strategy column colours
+// Strategy column colours (light + dark variants)
 // ---------------------------------------------------------------------------
 const STRATEGY_COLOURS = [
-  "bg-violet-100 text-violet-700 ring-violet-200",
-  "bg-sky-100 text-sky-700 ring-sky-200",
-  "bg-emerald-100 text-emerald-700 ring-emerald-200",
-  "bg-amber-100 text-amber-700 ring-amber-200",
-  "bg-rose-100 text-rose-700 ring-rose-200",
-  "bg-teal-100 text-teal-700 ring-teal-200",
-  "bg-indigo-100 text-indigo-700 ring-indigo-200",
-  "bg-orange-100 text-orange-700 ring-orange-200",
+  "bg-violet-100 text-violet-700 ring-violet-200 dark:bg-violet-900/30 dark:text-violet-300 dark:ring-violet-700",
+  "bg-sky-100 text-sky-700 ring-sky-200 dark:bg-sky-900/30 dark:text-sky-300 dark:ring-sky-700",
+  "bg-emerald-100 text-emerald-700 ring-emerald-200 dark:bg-emerald-900/30 dark:text-emerald-300 dark:ring-emerald-700",
+  "bg-amber-100 text-amber-700 ring-amber-200 dark:bg-amber-900/30 dark:text-amber-300 dark:ring-amber-700",
+  "bg-rose-100 text-rose-700 ring-rose-200 dark:bg-rose-900/30 dark:text-rose-300 dark:ring-rose-700",
+  "bg-teal-100 text-teal-700 ring-teal-200 dark:bg-teal-900/30 dark:text-teal-300 dark:ring-teal-700",
+  "bg-indigo-100 text-indigo-700 ring-indigo-200 dark:bg-indigo-900/30 dark:text-indigo-300 dark:ring-indigo-700",
+  "bg-orange-100 text-orange-700 ring-orange-200 dark:bg-orange-900/30 dark:text-orange-300 dark:ring-orange-700",
 ];
 function strategyColour(index: number) {
   return STRATEGY_COLOURS[index % STRATEGY_COLOURS.length];
@@ -104,7 +104,7 @@ export default function AssetsByDomainReport() {
   const totalFiltered = filtered.length;
   const hasActiveFilter = filterTier || filterType || filterStrategy || filterLifecycle;
 
-  const selectCls = "h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500";
+  const selectCls = "h-9 rounded-lg border border-slate-300 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-brand-500 dark:bg-slate-800 dark:border-slate-600 dark:text-slate-200";
 
   return (
     <div className="space-y-6">
@@ -127,25 +127,21 @@ export default function AssetsByDomainReport() {
       {/* Filters */}
       {!isLoading && !fetchError && (
         <div className="flex flex-wrap items-center gap-3">
-          {/* Tier */}
           <select value={filterTier} onChange={(e) => setFilterTier(e.target.value)} className={selectCls}>
             <option value="">All tiers</option>
             {tiers.map((t) => <option key={t.id} value={t.id}>{t.name}</option>)}
           </select>
 
-          {/* Type */}
           <select value={filterType} onChange={(e) => setFilterType(e.target.value)} className={selectCls}>
             <option value="">All types</option>
             {ASSET_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
           </select>
 
-          {/* Strategy */}
           <select value={filterStrategy} onChange={(e) => setFilterStrategy(e.target.value)} className={selectCls}>
             <option value="">All strategies</option>
             {strategies.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
           </select>
 
-          {/* Lifecycle */}
           <select value={filterLifecycle} onChange={(e) => setFilterLifecycle(e.target.value)} className={selectCls}>
             <option value="">All lifecycle statuses</option>
             {LIFECYCLE_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -154,7 +150,7 @@ export default function AssetsByDomainReport() {
           {hasActiveFilter && (
             <button
               onClick={() => { setFilterTier(""); setFilterType(""); setFilterStrategy(""); setFilterLifecycle(""); }}
-              className="text-xs text-slate-400 hover:text-slate-600 underline"
+              className="text-xs text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 underline"
             >
               Clear filters
             </button>
@@ -163,7 +159,7 @@ export default function AssetsByDomainReport() {
       )}
 
       {/* Matrix */}
-      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+      <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-900">
         {isLoading ? (
           <div className="flex items-center justify-center py-24">
             <div className="h-7 w-7 animate-spin rounded-full border-4 border-brand-600 border-t-transparent" />
@@ -175,31 +171,31 @@ export default function AssetsByDomainReport() {
             <Button variant="secondary" size="sm" onClick={fetchData}>Retry</Button>
           </div>
         ) : assets.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400">
-            <LayoutGrid className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400 dark:text-slate-500">
+            <LayoutGrid className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">No assets registered yet</p>
           </div>
         ) : strategies.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400">
-            <LayoutGrid className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400 dark:text-slate-500">
+            <LayoutGrid className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">No strategies configured</p>
-            <p className="text-xs text-slate-400">Add strategies in Asset Strategy to populate columns</p>
+            <p className="text-xs">Add strategies in Asset Strategy to populate columns</p>
           </div>
         ) : filtered.length === 0 ? (
-          <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400">
-            <LayoutGrid className="h-10 w-10 text-slate-300" />
+          <div className="flex flex-col items-center justify-center gap-3 py-24 text-slate-400 dark:text-slate-500">
+            <LayoutGrid className="h-10 w-10 text-slate-300 dark:text-slate-600" />
             <p className="text-sm font-medium">No assets match your filters</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full border-collapse">
               <thead>
-                <tr className="bg-slate-50 border-b border-slate-200">
-                  <th className="sticky left-0 z-10 bg-slate-50 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 min-w-[220px]">
+                <tr className="bg-slate-50 border-b border-slate-200 dark:bg-slate-800/50 dark:border-slate-700">
+                  <th className="sticky left-0 z-10 bg-slate-50 dark:bg-slate-800/50 px-6 py-3 text-left text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 min-w-[220px]">
                     Asset
                   </th>
                   {strategies.map((s, i) => (
-                    <th key={s.id} className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 min-w-[140px]">
+                    <th key={s.id} className="px-4 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400 min-w-[140px]">
                       <span className={`inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold ring-1 ring-inset ${strategyColour(i)}`}>
                         {s.name}
                       </span>
@@ -210,13 +206,13 @@ export default function AssetsByDomainReport() {
               <tbody>
                 {groups.map((group) => (
                   <>
-                    <tr key={`domain-${group.domainId ?? "none"}`} className="bg-slate-50/70 border-y border-slate-200">
+                    <tr key={`domain-${group.domainId ?? "none"}`} className="bg-slate-50/70 border-y border-slate-200 dark:bg-slate-800/30 dark:border-slate-700">
                       <td colSpan={strategies.length + 1} className="sticky left-0 px-6 py-2">
                         <div className="flex items-center gap-2">
-                          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500">
+                          <span className="text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                             {group.domainName}
                           </span>
-                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-500">
+                          <span className="rounded-full bg-slate-200 px-2 py-0.5 text-xs font-medium text-slate-500 dark:bg-slate-700 dark:text-slate-300">
                             {group.assets.length}
                           </span>
                         </div>
@@ -226,12 +222,12 @@ export default function AssetsByDomainReport() {
                       .slice()
                       .sort((a, b) => a.name.localeCompare(b.name))
                       .map((asset) => (
-                        <tr key={asset.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors">
-                          <td className="sticky left-0 bg-white px-6 py-3 hover:bg-slate-50">
+                        <tr key={asset.id} className="border-b border-slate-100 hover:bg-slate-50 transition-colors dark:border-slate-800 dark:hover:bg-slate-800/50">
+                          <td className="sticky left-0 bg-white px-6 py-3 hover:bg-slate-50 dark:bg-slate-900 dark:hover:bg-slate-800/50">
                             <div className="flex items-center gap-2">
-                              <span className="text-sm font-medium text-slate-800">{asset.name}</span>
+                              <span className="text-sm font-medium text-slate-800 dark:text-slate-100">{asset.name}</span>
                               {asset.shortCode && (
-                                <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-slate-400">
+                                <span className="rounded bg-slate-100 px-1.5 py-0.5 text-xs font-mono text-slate-400 dark:bg-slate-700 dark:text-slate-400">
                                   {asset.shortCode}
                                 </span>
                               )}
