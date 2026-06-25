@@ -40,6 +40,11 @@ export const navigationConfig: NavGroup[] = [
         icon: "FileCode2",
       },
       {
+        label: "Dependency Map",
+        href: "/dependencies",
+        icon: "Network",
+      },
+      {
         label: "Projects",
         href: "/projects",
         icon: "FolderKanban",
@@ -80,19 +85,9 @@ export const navigationConfig: NavGroup[] = [
     title: "Manage",
     items: [
       {
-        label: "Users",
-        href: "/users",
-        icon: "Users",
-      },
-      {
         label: "Settings",
         href: "/settings",
         icon: "Settings",
-      },
-      {
-        label: "Audit",
-        href: "/audit",
-        icon: "ClipboardList",
       },
     ],
   },
