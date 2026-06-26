@@ -63,6 +63,12 @@ const STEP_META: Omit<GetStartedStep, "count" | "done">[] = [
     href: "/vendors",
   },
   {
+    key: "complexities",
+    label: "Asset Complexity",
+    description: "Define complexity levels (e.g. Low, Medium, High, Critical) for classifying assets.",
+    href: "/settings/asset-complexity",
+  },
+  {
     key: "assets",
     label: "Add my first asset",
     description: "Register your first asset in the registry — requires the reference data above.",

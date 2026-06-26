@@ -13,6 +13,7 @@ export async function GET() {
         (SELECT COUNT(*) FROM asset_strategies) AS strategies,
         (SELECT COUNT(*) FROM tiers)            AS tiers,
         (SELECT COUNT(*) FROM vendors)          AS vendors,
+        (SELECT COUNT(*) FROM asset_complexities) AS complexities,
         (SELECT COUNT(*) FROM assets)           AS assets,
         (SELECT COUNT(*) FROM projects)         AS projects
     `);
@@ -22,8 +23,9 @@ export async function GET() {
       domains:     Number(row.domains),
       strategies:  Number(row.strategies),
       tiers:       Number(row.tiers),
-      vendors:     Number(row.vendors),
-      assets:      Number(row.assets),
+      vendors:      Number(row.vendors),
+      complexities: Number(row.complexities),
+      assets:       Number(row.assets),
       projects:    Number(row.projects),
     });
   } catch (err) {

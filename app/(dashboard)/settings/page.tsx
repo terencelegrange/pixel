@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Settings, Bell, Lock, Globe, ShieldCheck, MessageSquare, ChevronRight, Layers, GitBranch, Gauge, Building2, Network, Target, Package2, BarChart2, ScrollText, MapPin } from "lucide-react";
+import { Settings, Bell, Lock, Globe, ShieldCheck, MessageSquare, ChevronRight, Layers, GitBranch, Gauge, Building2, Network, Target, Package2, BarChart2, ScrollText, MapPin, Users, ClipboardList } from "lucide-react";
 
 // ---------------------------------------------------------------------------
 // Clickable settings tile
@@ -48,6 +48,29 @@ export default function SettingsPage() {
         <p className="mt-1 text-sm text-slate-500 dark:text-slate-400">
           Manage your account and application preferences.
         </p>
+      </div>
+
+      {/* Administration */}
+      <div>
+        <h2 className="text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500 mb-3">
+          Administration
+        </h2>
+        <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          <SettingsTile
+            href="/users"
+            icon={Users}
+            iconBg="bg-violet-500"
+            title="Users"
+            description="Manage user accounts, roles, and access levels."
+          />
+          <SettingsTile
+            href="/audit"
+            icon={ClipboardList}
+            iconBg="bg-slate-500"
+            title="Audit Log"
+            description="Review a full history of changes made across the platform."
+          />
+        </div>
       </div>
 
       {/* Reference Data */}

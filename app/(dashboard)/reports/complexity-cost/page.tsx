@@ -22,22 +22,19 @@ type SortKey = "name" | "complexity" | "cost" | "lifecycle" | "domain" | "strate
 type SortDir = "asc" | "desc";
 
 const LIFECYCLE_STYLES: Record<string, string> = {
-  Proposed:         "bg-slate-100 text-slate-600",
-  Approved:         "bg-blue-50 text-blue-700",
-  "In Development": "bg-amber-50 text-amber-700",
-  Production:       "bg-emerald-50 text-emerald-700",
-  Sunset:           "bg-orange-50 text-orange-700",
-  Retired:          "bg-red-50 text-red-600",
+  Proposed:         "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300",
+  Approved:         "bg-blue-50 text-blue-700 dark:bg-blue-900/40 dark:text-blue-300",
+  "In Development": "bg-amber-50 text-amber-700 dark:bg-amber-900/40 dark:text-amber-300",
+  Production:       "bg-emerald-50 text-emerald-700 dark:bg-emerald-900/40 dark:text-emerald-300",
+  Sunset:           "bg-orange-50 text-orange-700 dark:bg-orange-900/40 dark:text-orange-300",
+  Retired:          "bg-red-50 text-red-600 dark:bg-red-900/40 dark:text-red-400",
 };
 
-// A row is a "replacement candidate" when it has a complexity AND a cost,
-// and its cost is in the upper half of all costs AND its complexity is in the
-// lower half of all complexity sort orders (or alphabetically first half).
 function flagCandidates(
   rows: Asset[],
   complexities: AssetComplexity[],
   costThreshold: number,
-  complexityIds: string[],   // ordered low→high by sortOrder
+  complexityIds: string[],
 ): Set<string> {
   const half = Math.ceil(complexityIds.length / 2);
   const lowComplexityIds = new Set(complexityIds.slice(0, half));
@@ -58,7 +55,7 @@ function flagCandidates(
 // Sub-components
 // ---------------------------------------------------------------------------
 function SortIcon({ col, active, dir }: { col: string; active: SortKey; dir: SortDir }) {
-  if (col !== active) return <ArrowUpDown className="h-3.5 w-3.5 text-slate-300" />;
+  if (col !== active) return <ArrowUpDown className="h-3.5 w-3.5 text-slate-300 dark:text-slate-600" />;
   return dir === "asc"
     ? <ArrowUp className="h-3.5 w-3.5 text-brand-500" />
     : <ArrowDown className="h-3.5 w-3.5 text-brand-500" />;
@@ -128,13 +125,11 @@ export default function ComplexityCostReportPage() {
 
   useEffect(() => { load(); }, [load]);
 
-  // Complexity IDs ordered low→high (by sort_order then name)
   const orderedComplexityIds = useMemo(
     () => complexities.map((c) => c.id),
     [complexities],
   );
 
-  // Cost threshold = median of all assets that have a cost
   const costThreshold = useMemo(() => {
     const costs = assets
       .map((a) => a.contractAmount)
@@ -150,7 +145,6 @@ export default function ComplexityCostReportPage() {
     [assets, complexities, costThreshold, orderedComplexityIds],
   );
 
-  // Filtered + sorted rows
   const rows = useMemo(() => {
     let list = assets.filter((a) => {
       if (filterComplexity && a.complexityId !== filterComplexity) return false;
@@ -185,7 +179,6 @@ export default function ComplexityCostReportPage() {
   }, [assets, filterComplexity, filterLifecycle, filterDomain, filterStrategy, filterType,
       filterCandidatesOnly, minCost, maxCost, sortKey, sortDir, complexities, candidateIds]);
 
-  // Summary stats (over filtered rows)
   const totalCost = useMemo(
     () => rows.reduce((s, a) => s + (a.contractAmount ?? 0), 0),
     [rows],
@@ -225,6 +218,9 @@ export default function ComplexityCostReportPage() {
   const LIFECYCLES = ["Proposed", "Approved", "In Development", "Production", "Sunset", "Retired"];
   const TYPES = ["SaaS", "On-Premise", "Hybrid", "Cloud", "Open Source", "Other"];
 
+  const selectCls = "rounded-lg border border-slate-300 bg-white py-2 pl-3 pr-8 text-sm text-slate-700 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200";
+  const inputCls  = "w-28 rounded-lg border border-slate-300 bg-white py-2 px-3 text-sm text-slate-700 placeholder-slate-400 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200 dark:placeholder-slate-500";
+
   // ---------------------------------------------------------------------------
   return (
     <div className="space-y-6">
@@ -256,32 +252,32 @@ export default function ComplexityCostReportPage() {
               label="Assets shown"
               value={rows.length}
               sub={`of ${assets.length} total`}
-              colour="border-slate-200 bg-white text-slate-800"
+              colour="border-slate-200 bg-white text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             />
             <StatCard
               label="Total licence cost"
               value={fmt(totalCost || null)}
               sub={`${rows.filter((a) => a.contractAmount != null).length} with cost data`}
-              colour="border-slate-200 bg-white text-slate-800"
+              colour="border-slate-200 bg-white text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100"
             />
             <StatCard
               label="Replacement targets"
               value={candidatesInView.length}
               sub="Low complexity + high cost"
-              colour="border-rose-200 bg-rose-50 text-rose-800"
+              colour="border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-900/20 dark:text-rose-300"
             />
             <StatCard
               label="Target cost exposure"
               value={fmt(candidateCost || null)}
               sub="Potential savings if replaced"
-              colour="border-rose-200 bg-rose-50 text-rose-800"
+              colour="border-rose-200 bg-rose-50 text-rose-800 dark:border-rose-800 dark:bg-rose-900/20 dark:text-rose-300"
             />
           </div>
 
           {/* Legend */}
-          <div className="flex flex-wrap items-center gap-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3">
-            <Target className="h-4 w-4 text-amber-600 shrink-0" />
-            <p className="text-sm text-amber-800">
+          <div className="flex flex-wrap items-center gap-4 rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 dark:border-amber-800 dark:bg-amber-900/20">
+            <Target className="h-4 w-4 text-amber-600 dark:text-amber-400 shrink-0" />
+            <p className="text-sm text-amber-800 dark:text-amber-300">
               <span className="font-semibold">Replacement targets</span> are assets with a complexity
               in the lower half of your defined levels <em>and</em> a licensing cost above the median
               ({fmt(costThreshold)}) of assets with cost data.
@@ -289,17 +285,16 @@ export default function ComplexityCostReportPage() {
           </div>
 
           {/* Filters */}
-          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3">
-            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400">
+          <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm space-y-3 dark:border-slate-700 dark:bg-slate-800">
+            <div className="flex items-center gap-2 text-xs font-semibold uppercase tracking-wider text-slate-400 dark:text-slate-500">
               <Filter className="h-3.5 w-3.5" />
               Filters
             </div>
             <div className="flex flex-wrap gap-3">
-              {/* Complexity */}
               <select
                 value={filterComplexity}
                 onChange={(e) => setFilterComplexity(e.target.value)}
-                className="rounded-lg border border-slate-300 py-2 pl-3 pr-8 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className={selectCls}
               >
                 <option value="">All complexities</option>
                 <option value="__none__">No complexity set</option>
@@ -308,41 +303,37 @@ export default function ComplexityCostReportPage() {
                 ))}
               </select>
 
-              {/* Lifecycle */}
               <select
                 value={filterLifecycle}
                 onChange={(e) => setFilterLifecycle(e.target.value)}
-                className="rounded-lg border border-slate-300 py-2 pl-3 pr-8 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className={selectCls}
               >
                 <option value="">All lifecycles</option>
                 {LIFECYCLES.map((l) => <option key={l} value={l}>{l}</option>)}
               </select>
 
-              {/* Domain */}
               <select
                 value={filterDomain}
                 onChange={(e) => setFilterDomain(e.target.value)}
-                className="rounded-lg border border-slate-300 py-2 pl-3 pr-8 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className={selectCls}
               >
                 <option value="">All domains</option>
                 {domains.map((d) => <option key={d.id} value={d.id}>{d.name}</option>)}
               </select>
 
-              {/* Strategy */}
               <select
                 value={filterStrategy}
                 onChange={(e) => setFilterStrategy(e.target.value)}
-                className="rounded-lg border border-slate-300 py-2 pl-3 pr-8 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className={selectCls}
               >
                 <option value="">All strategies</option>
                 {strategies.map((s) => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
 
-              {/* Type */}
               <select
                 value={filterType}
                 onChange={(e) => setFilterType(e.target.value)}
-                className="rounded-lg border border-slate-300 py-2 pl-3 pr-8 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                className={selectCls}
               >
                 <option value="">All types</option>
                 {TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
@@ -350,39 +341,39 @@ export default function ComplexityCostReportPage() {
 
               {/* Cost range */}
               <div className="flex items-center gap-1.5">
-                <span className="text-sm text-slate-400">$</span>
+                <span className="text-sm text-slate-400 dark:text-slate-500">$</span>
                 <input
                   type="number"
                   placeholder="Min cost"
                   value={minCost}
                   onChange={(e) => setMinCost(e.target.value)}
-                  className="w-28 rounded-lg border border-slate-300 py-2 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className={inputCls}
                 />
-                <span className="text-sm text-slate-400">–</span>
+                <span className="text-sm text-slate-400 dark:text-slate-500">–</span>
                 <input
                   type="number"
                   placeholder="Max cost"
                   value={maxCost}
                   onChange={(e) => setMaxCost(e.target.value)}
-                  className="w-28 rounded-lg border border-slate-300 py-2 px-3 text-sm focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500"
+                  className={inputCls}
                 />
               </div>
 
               {/* Candidates only toggle */}
-              <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 py-2 px-3 text-sm hover:border-rose-300 hover:bg-rose-50 transition-colors">
+              <label className="flex cursor-pointer items-center gap-2 rounded-lg border border-slate-300 py-2 px-3 text-sm transition-colors hover:border-rose-300 hover:bg-rose-50 dark:border-slate-600 dark:hover:border-rose-700 dark:hover:bg-rose-900/20">
                 <input
                   type="checkbox"
                   checked={filterCandidatesOnly}
                   onChange={(e) => setFilterCandidatesOnly(e.target.checked)}
                   className="h-4 w-4 rounded border-slate-300 accent-rose-600"
                 />
-                <span className="font-medium text-slate-700">Targets only</span>
+                <span className="font-medium text-slate-700 dark:text-slate-300">Targets only</span>
               </label>
 
               {hasFilters && (
                 <button
                   onClick={clearFilters}
-                  className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700"
+                  className="flex items-center gap-1 text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                 >
                   <X className="h-3.5 w-3.5" /> Clear all
                 </button>
@@ -391,26 +382,26 @@ export default function ComplexityCostReportPage() {
           </div>
 
           {/* Table */}
-          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden">
+          <div className="rounded-xl border border-slate-200 bg-white shadow-sm overflow-hidden dark:border-slate-700 dark:bg-slate-800">
             {rows.length === 0 ? (
-              <div className="flex flex-col items-center justify-center gap-2 py-20 text-slate-400">
+              <div className="flex flex-col items-center justify-center gap-2 py-20 text-slate-400 dark:text-slate-500">
                 <TrendingDown className="h-8 w-8" />
                 <p className="text-sm font-medium">No assets match the current filters</p>
                 {hasFilters && (
-                  <button onClick={clearFilters} className="text-sm text-brand-600 hover:underline">
+                  <button onClick={clearFilters} className="text-sm text-brand-600 hover:underline dark:text-brand-400">
                     Clear filters
                   </button>
                 )}
               </div>
             ) : (
               <div className="overflow-x-auto">
-                <table className="min-w-full divide-y divide-slate-200">
-                  <thead className="bg-slate-50">
+                <table className="min-w-full divide-y divide-slate-200 dark:divide-slate-700">
+                  <thead className="bg-slate-50 dark:bg-slate-900">
                     <tr>
                       <th className="px-5 py-3 text-left">
                         <button
                           onClick={() => toggleSort("name")}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                           Asset <SortIcon col="name" active={sortKey} dir={sortDir} />
                         </button>
@@ -418,7 +409,7 @@ export default function ComplexityCostReportPage() {
                       <th className="px-5 py-3 text-left">
                         <button
                           onClick={() => toggleSort("complexity")}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                           Complexity <SortIcon col="complexity" active={sortKey} dir={sortDir} />
                         </button>
@@ -426,7 +417,7 @@ export default function ComplexityCostReportPage() {
                       <th className="px-5 py-3 text-right">
                         <button
                           onClick={() => toggleSort("cost")}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                           <SortIcon col="cost" active={sortKey} dir={sortDir} /> Annual Licence Cost
                         </button>
@@ -434,7 +425,7 @@ export default function ComplexityCostReportPage() {
                       <th className="hidden px-5 py-3 text-left lg:table-cell">
                         <button
                           onClick={() => toggleSort("lifecycle")}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                           Lifecycle <SortIcon col="lifecycle" active={sortKey} dir={sortDir} />
                         </button>
@@ -442,7 +433,7 @@ export default function ComplexityCostReportPage() {
                       <th className="hidden px-5 py-3 text-left xl:table-cell">
                         <button
                           onClick={() => toggleSort("domain")}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                           Domain <SortIcon col="domain" active={sortKey} dir={sortDir} />
                         </button>
@@ -450,17 +441,17 @@ export default function ComplexityCostReportPage() {
                       <th className="hidden px-5 py-3 text-left xl:table-cell">
                         <button
                           onClick={() => toggleSort("strategy")}
-                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700"
+                          className="inline-flex items-center gap-1.5 text-xs font-semibold uppercase tracking-wider text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200"
                         >
                           Strategy <SortIcon col="strategy" active={sortKey} dir={sortDir} />
                         </button>
                       </th>
-                      <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500">
+                      <th className="px-5 py-3 text-center text-xs font-semibold uppercase tracking-wider text-slate-500 dark:text-slate-400">
                         Target
                       </th>
                     </tr>
                   </thead>
-                  <tbody className="divide-y divide-slate-100 bg-white">
+                  <tbody className="divide-y divide-slate-100 bg-white dark:divide-slate-700 dark:bg-slate-800">
                     {rows.map((asset) => {
                       const isTarget = candidateIds.has(asset.id);
                       return (
@@ -469,8 +460,8 @@ export default function ComplexityCostReportPage() {
                           className={[
                             "transition-colors",
                             isTarget
-                              ? "bg-rose-50/60 hover:bg-rose-50"
-                              : "hover:bg-slate-50",
+                              ? "bg-rose-50/60 hover:bg-rose-50 dark:bg-rose-900/20 dark:hover:bg-rose-900/30"
+                              : "hover:bg-slate-50 dark:hover:bg-slate-700/50",
                           ].join(" ")}
                         >
                           {/* Name */}
@@ -479,21 +470,21 @@ export default function ComplexityCostReportPage() {
                               href={`/assets/${asset.id}`}
                               className="group flex items-center gap-2"
                             >
-                              <span className="text-sm font-medium text-slate-900 group-hover:text-brand-600 transition-colors">
+                              <span className="text-sm font-medium text-slate-900 group-hover:text-brand-600 transition-colors dark:text-slate-100 dark:group-hover:text-brand-400">
                                 {asset.name}
                               </span>
                             </Link>
-                            <span className="text-xs text-slate-400">{asset.type}</span>
+                            <span className="text-xs text-slate-400 dark:text-slate-500">{asset.type}</span>
                           </td>
 
                           {/* Complexity */}
                           <td className="px-5 py-4">
                             {asset.complexityName ? (
-                              <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700">
+                              <span className="inline-flex items-center rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-medium text-slate-700 dark:bg-slate-700 dark:text-slate-300">
                                 {asset.complexityName}
                               </span>
                             ) : (
-                              <span className="text-xs text-slate-300 italic">Not set</span>
+                              <span className="text-xs text-slate-300 italic dark:text-slate-600">Not set</span>
                             )}
                           </td>
 
@@ -503,46 +494,48 @@ export default function ComplexityCostReportPage() {
                               <div className="flex flex-col items-end">
                                 <span className={[
                                   "text-sm font-semibold tabular-nums",
-                                  isTarget ? "text-rose-700" : "text-slate-800",
+                                  isTarget
+                                    ? "text-rose-700 dark:text-rose-400"
+                                    : "text-slate-800 dark:text-slate-200",
                                 ].join(" ")}>
                                   {fmt(asset.contractAmount)}
                                 </span>
                                 {asset.contractEndDate && (
-                                  <span className="text-xs text-slate-400">
+                                  <span className="text-xs text-slate-400 dark:text-slate-500">
                                     expires {new Date(asset.contractEndDate).toLocaleDateString("en-GB", { day: "2-digit", month: "short", year: "numeric" })}
                                   </span>
                                 )}
                               </div>
                             ) : (
-                              <span className="text-xs text-slate-300 italic">No data</span>
+                              <span className="text-xs text-slate-300 italic dark:text-slate-600">No data</span>
                             )}
                           </td>
 
                           {/* Lifecycle */}
                           <td className="hidden px-5 py-4 lg:table-cell">
-                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${LIFECYCLE_STYLES[asset.lifecycleStatus] ?? "bg-slate-100 text-slate-600"}`}>
+                            <span className={`inline-flex items-center rounded-full px-2.5 py-0.5 text-xs font-medium ${LIFECYCLE_STYLES[asset.lifecycleStatus] ?? "bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-300"}`}>
                               {asset.lifecycleStatus}
                             </span>
                           </td>
 
                           {/* Domain */}
-                          <td className="hidden px-5 py-4 xl:table-cell text-sm text-slate-600">
-                            {asset.domainName ?? <span className="italic text-slate-300">—</span>}
+                          <td className="hidden px-5 py-4 xl:table-cell text-sm text-slate-600 dark:text-slate-300">
+                            {asset.domainName ?? <span className="italic text-slate-300 dark:text-slate-600">—</span>}
                           </td>
 
                           {/* Strategy */}
-                          <td className="hidden px-5 py-4 xl:table-cell text-sm text-slate-600">
-                            {asset.strategyName ?? <span className="italic text-slate-300">—</span>}
+                          <td className="hidden px-5 py-4 xl:table-cell text-sm text-slate-600 dark:text-slate-300">
+                            {asset.strategyName ?? <span className="italic text-slate-300 dark:text-slate-600">—</span>}
                           </td>
 
                           {/* Target flag */}
                           <td className="px-5 py-4 text-center">
                             {isTarget ? (
                               <span title="Replacement candidate" className="inline-flex items-center justify-center">
-                                <Target className="h-4 w-4 text-rose-500" />
+                                <Target className="h-4 w-4 text-rose-500 dark:text-rose-400" />
                               </span>
                             ) : (
-                              <span className="text-slate-200">—</span>
+                              <span className="text-slate-200 dark:text-slate-700">—</span>
                             )}
                           </td>
                         </tr>
@@ -552,23 +545,23 @@ export default function ComplexityCostReportPage() {
 
                   {/* Footer totals */}
                   {rows.length > 0 && (
-                    <tfoot className="border-t border-slate-200 bg-slate-50">
+                    <tfoot className="border-t border-slate-200 bg-slate-50 dark:border-slate-700 dark:bg-slate-900">
                       <tr>
-                        <td colSpan={2} className="px-5 py-3 text-xs font-semibold text-slate-500">
+                        <td colSpan={2} className="px-5 py-3 text-xs font-semibold text-slate-500 dark:text-slate-400">
                           {rows.length} asset{rows.length !== 1 ? "s" : ""}
                           {candidatesInView.length > 0 && (
-                            <span className="ml-2 text-rose-600">
+                            <span className="ml-2 text-rose-600 dark:text-rose-400">
                               · {candidatesInView.length} target{candidatesInView.length !== 1 ? "s" : ""}
                             </span>
                           )}
                         </td>
                         <td className="px-5 py-3 text-right">
                           <div className="flex flex-col items-end">
-                            <span className="text-xs font-semibold text-slate-700 tabular-nums">
+                            <span className="text-xs font-semibold text-slate-700 tabular-nums dark:text-slate-200">
                               {fmt(totalCost || null)}
                             </span>
                             {candidateCost > 0 && (
-                              <span className="text-xs text-rose-600 tabular-nums">
+                              <span className="text-xs text-rose-600 tabular-nums dark:text-rose-400">
                                 {fmt(candidateCost)} targets
                               </span>
                             )}
@@ -583,7 +576,7 @@ export default function ComplexityCostReportPage() {
             )}
           </div>
 
-          <p className="text-xs text-slate-400">
+          <p className="text-xs text-slate-400 dark:text-slate-500">
             Cost data sourced from the &ldquo;Contract amount&rdquo; field on each asset.
             Assets without a contract amount are included in the report but excluded from cost totals.
           </p>

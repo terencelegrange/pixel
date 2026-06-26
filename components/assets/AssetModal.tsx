@@ -487,21 +487,15 @@ export default function AssetModal({
             </div>
           </div>
 
-          <Input
-            label="Business owner"
-            type="text"
-            placeholder="e.g. Jane Smith"
-            value={form.businessOwner}
-            onChange={(e) => set("businessOwner", e.target.value)}
-          />
+          <SelectField label="Business owner" value={form.businessOwner} onChange={(v) => set("businessOwner", v)}>
+            <option value="">— Unassigned —</option>
+            {users.map((u) => <option key={u.id} value={u.name}>{u.name}</option>)}
+          </SelectField>
 
-          <Input
-            label="Technical owner"
-            type="text"
-            placeholder="e.g. John Doe"
-            value={form.technicalOwner}
-            onChange={(e) => set("technicalOwner", e.target.value)}
-          />
+          <SelectField label="Technical owner" value={form.technicalOwner} onChange={(v) => set("technicalOwner", v)}>
+            <option value="">— Unassigned —</option>
+            {users.map((u) => <option key={u.id} value={u.name}>{u.name}</option>)}
+          </SelectField>
 
           <SelectField label="Strategy" value={form.strategyId} onChange={(v) => set("strategyId", v)}>
             <option value="">— Unassigned —</option>

@@ -1,7 +1,7 @@
 "use client";
 
 import "@excalidraw/excalidraw/index.css";
-import React, { useState, useEffect, useCallback, useMemo } from "react";
+import React, { useState, useEffect, useCallback, useMemo, useRef } from "react";
 import dynamic from "next/dynamic";
 import Link from "next/link";
 import {
@@ -60,8 +60,12 @@ export default function DiagramEditor({
   const [hasChanges, setHasChanges] = useState(false);
   const [versionNumber, setVersionNumber] = useState(initialVersionNumber);
   const [isSaving, setIsSaving] = useState(false);
+  const [isAutoSaving, setIsAutoSaving] = useState(false);
   const [saveError, setSaveError] = useState("");
   const [saveSuccess, setSaveSuccess] = useState(false);
+
+  // ── Auto-save timer ref ───────────────────────────────────────────────────
+  const autoSaveTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // ── Grid toggle ───────────────────────────────────────────────────────────
   const [gridEnabled, setGridEnabled] = useState(true);
@@ -294,6 +298,20 @@ export default function DiagramEditor({
     }
   }, [excalidrawAPI, diagramId, userId, userName, loadVersions]);
 
+  // ── Auto-save: debounce 800ms after last change ───────────────────────────
+  useEffect(() => {
+    if (!hasChanges) return;
+    if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    autoSaveTimerRef.current = setTimeout(async () => {
+      setIsAutoSaving(true);
+      await handleSave();
+      setIsAutoSaving(false);
+    }, 800);
+    return () => {
+      if (autoSaveTimerRef.current) clearTimeout(autoSaveTimerRef.current);
+    };
+  }, [hasChanges, handleSave]);
+
   // ── Update diagram name ───────────────────────────────────────────────────
   const handleNameSave = useCallback(async () => {
     setEditingName(false);
@@ -412,6 +430,12 @@ export default function DiagramEditor({
           Grid
         </button>
 
+        {isAutoSaving && (
+          <span className="flex items-center gap-1 text-xs text-slate-400">
+            <Loader2 className="h-3 w-3 animate-spin" />
+            Auto-saving…
+          </span>
+        )}
         {saveError && (
           <span className="text-xs text-red-600">{saveError}</span>
         )}
@@ -537,9 +561,9 @@ export default function DiagramEditor({
               canvasActions: {
                 saveToActiveFile: false,
                 loadScene: false,
-                export: { saveFileToDisk: false },
+                export: { saveFileToDisk: true },
                 changeViewBackgroundColor: true,
-                toggleTheme: false,
+                toggleTheme: true,
               },
             }}
           />
