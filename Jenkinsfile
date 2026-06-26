@@ -87,19 +87,19 @@ ENVEOF"
             steps {
                 sshagent(credentials: ['PIXXEL_SSH_KEY']) {
                     sh """
-                        ssh ${REMOTE_USER}@${REMOTE_HOST} "
+                        ssh ${REMOTE_USER}@${REMOTE_HOST} 'bash -s' << 'REMOTE_SCRIPT'
                             attempt=0
                             until curl -sf http://localhost:${APP_PORT}/api/health > /dev/null 2>&1; do
                                 attempt=\$((attempt+1))
-                                if [ \$attempt -ge 18 ]; then
+                                if [ "\$attempt" -ge 18 ]; then
                                     echo 'Health check timed out after 90s'
                                     exit 1
                                 fi
-                                echo 'Waiting for app... (\$attempt/18)'
+                                echo "Waiting for app... (\$attempt/18)"
                                 sleep 5
                             done
                             echo 'App is healthy'
-                        "
+REMOTE_SCRIPT
                     """
                 }
             }
