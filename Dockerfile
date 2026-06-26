@@ -44,6 +44,9 @@ COPY --from=builder /app/public ./public
 COPY --from=builder --chown=nextjs:nodejs /app/.next/standalone ./
 COPY --from=builder --chown=nextjs:nodejs /app/.next/static    ./.next/static
 
+# Allow the app to write config/state files to /app at runtime
+RUN chown nextjs:nodejs /app
+
 USER nextjs
 
 EXPOSE 3000
