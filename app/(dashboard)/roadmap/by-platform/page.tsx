@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef, FormEvent } from "react";
+import React, { useState, useEffect, useCallback, useRef, FormEvent } from "react";
 import { ChevronDown, ChevronRight, AlertTriangle, Trash2 } from "lucide-react";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/Button";
@@ -9,6 +9,7 @@ import {
   RoadmapDomainGroup, RoadmapAsset, AssetRoadmapPhase,
   InvestmentClassification, Domain,
 } from "@/types";
+import { hasOverlapWith } from "@/lib/roadmap-utils";
 
 // ---------------------------------------------------------------------------
 // Quarter utilities
@@ -144,6 +145,30 @@ interface PhaseForm {
   startQuarter: string;
   endQuarter: string;
   notes: string;
+}
+
+// Defined before DragState because DragState.currentPreview references it
+interface DragPreview {
+  phaseId:    string;
+  startIdx:   number;
+  endIdx:     number;
+  hasOverlap: boolean;
+}
+
+interface DragState {
+  phase:            AssetRoadmapPhase;
+  mode:             "move" | "resize";
+  originalStartIdx: number;
+  originalEndIdx:   number;
+  startX:           number;
+  colWidth:         number;
+  hasMoved:         boolean;
+  currentPreview:   DragPreview;
+}
+
+interface ToastItem {
+  id:      number;
+  message: string;
 }
 
 function PhaseModal({
@@ -316,6 +341,90 @@ function PhaseModal({
         </div>
       </form>
     </Modal>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Draggable phase bar
+// ---------------------------------------------------------------------------
+function DraggablePhaseBar({
+  phase,
+  quarters,
+  dragPreview,
+  isSaving,
+  onPointerDownMove,
+  onPointerDownResize,
+}: {
+  phase:               AssetRoadmapPhase;
+  quarters:            string[];
+  dragPreview:         DragPreview | null;
+  isSaving:            boolean;
+  onPointerDownMove:   (e: React.PointerEvent, phase: AssetRoadmapPhase, laneEl: HTMLElement) => void;
+  onPointerDownResize: (e: React.PointerEvent, phase: AssetRoadmapPhase, laneEl: HTMLElement) => void;
+}) {
+  const n              = quarters.length;
+  const isBeingDragged = dragPreview?.phaseId === phase.id;
+  const isOverlap      = isBeingDragged && (dragPreview?.hasOverlap ?? false);
+
+  let left: string;
+  let width: string;
+
+  if (isBeingDragged && dragPreview) {
+    left  = `${(dragPreview.startIdx / n) * 100}%`;
+    width = `${((dragPreview.endIdx - dragPreview.startIdx + 1) / n) * 100}%`;
+  } else {
+    const pos = phasePosition(phase, quarters);
+    if (!pos) return null;
+    ({ left, width } = pos);
+  }
+
+  const bgColor = isOverlap ? "#ef4444" : phase.classificationColor;
+  const opacity = isSaving
+    ? 0.5
+    : isBeingDragged
+    ? (isOverlap ? 0.55 : 0.85)
+    : 1;
+  const cursor = isSaving
+    ? "wait"
+    : isBeingDragged
+    ? (isOverlap ? "not-allowed" : "grabbing")
+    : "grab";
+
+  return (
+    <div
+      className="absolute inset-y-1.5 flex items-center rounded-md px-2 text-xs font-medium text-white shadow-sm overflow-hidden select-none"
+      style={{
+        left,
+        width,
+        backgroundColor: bgColor,
+        opacity,
+        cursor,
+        zIndex: isBeingDragged ? 10 : 1,
+        pointerEvents: isSaving ? "none" : undefined,
+        boxShadow: isBeingDragged && !isOverlap
+          ? "0 4px 12px rgba(0,0,0,0.25)"
+          : undefined,
+      }}
+      title={`${phase.classificationName}${phase.notes ? `: ${phase.notes}` : ""}`}
+      // Prevent click bubbling to the lane (which would open Add modal)
+      onClick={(e) => e.stopPropagation()}
+      onPointerDown={(e) => {
+        const lane = (e.currentTarget as HTMLElement).parentElement!;
+        onPointerDownMove(e, phase, lane);
+      }}
+    >
+      <span className="flex-1 truncate pointer-events-none">{phase.classificationName}</span>
+      {/* Resize handle — 8 px strip on the right edge */}
+      <div
+        className="absolute right-0 top-0 bottom-0 w-2 cursor-ew-resize"
+        onPointerDown={(e) => {
+          e.stopPropagation();
+          // parentElement = bar div, parentElement.parentElement = lane div
+          const lane = (e.currentTarget as HTMLElement).parentElement!.parentElement!;
+          onPointerDownResize(e, phase, lane);
+        }}
+      />
+    </div>
   );
 }
 
