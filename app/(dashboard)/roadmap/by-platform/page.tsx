@@ -490,6 +490,7 @@ function RoadmapChart({
       hasMoved: false, currentPreview: initialPreview,
     };
     setDragPreview(initialPreview);
+    document.body.style.cursor = mode === "resize" ? "ew-resize" : "grabbing";
   }, []);
 
   const onPointerDownMove = useCallback(
@@ -537,6 +538,7 @@ function RoadmapChart({
       if (!drag) return;
       const preview = drag.currentPreview;
       dragRef.current = null;
+      document.body.style.cursor = "";
 
       // Under 4 px travel — treat as click, open edit modal
       if (!drag.hasMoved) {
@@ -561,14 +563,17 @@ function RoadmapChart({
       setSavingId(drag.phase.id);
       callbacksRef.current
         .onSavePhase(drag.phase, newStart, newEnd)
-        .catch((err: Error) =>
+        .then(() => {
+          setDragPreview(null);   // clear AFTER data is refreshed
+        })
+        .catch((err: Error) => {
+          setDragPreview(null);   // still clear on error (snap back)
           callbacksRef.current.onError(
             err?.message ?? "Save failed - your change was not saved.",
-          ),
-        )
+          );
+        })
         .finally(() => {
           setSavingId(null);
-          setDragPreview(null);
         });
     }
 
