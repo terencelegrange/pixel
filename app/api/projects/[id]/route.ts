@@ -8,10 +8,8 @@ const VALID_STATUSES = ["Active", "On Hold", "Completed", "Cancelled"] as const;
 type ProjectStatus = typeof VALID_STATUSES[number];
 
 // PUT /api/projects/[id]
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;
@@ -53,10 +51,8 @@ export async function PUT(
 }
 
 // DELETE /api/projects/[id]
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;

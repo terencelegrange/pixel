@@ -10,6 +10,7 @@ jest.mock('@/lib/auth', () => ({
   clearStoredUser: jest.fn(),
   loginUser: jest.fn(),
   registerUser: jest.fn(),
+  logoutUser: jest.fn(),
 }))
 
 import { AuthProvider, useAuth } from '@/context/AuthContext'

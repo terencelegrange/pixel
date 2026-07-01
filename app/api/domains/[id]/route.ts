@@ -5,10 +5,8 @@ import { writeAudit } from "@/lib/audit";
 import { requireUser } from "@/lib/require-user";
 
 // PUT /api/domains/[id]
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;
@@ -51,10 +49,8 @@ export async function PUT(
 }
 
 // DELETE /api/domains/[id]
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;

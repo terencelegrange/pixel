@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 
 jest.mock('@/lib/db', () => ({
   setupDatabase: jest.fn().mockResolvedValue(undefined),
@@ -6,12 +6,16 @@ jest.mock('@/lib/db', () => ({
   resetPool: jest.fn(),
 }))
 jest.mock('@/lib/audit', () => ({ writeAudit: jest.fn().mockResolvedValue(undefined) }))
+jest.mock('@/lib/require-user', () => ({
+  requireUser: jest.fn().mockReturnValue({ ok: true, user: { id: 'u1', name: 'Test User', email: 'test@example.com', role: 'Admin' } }),
+}))
 
 import { getDb } from '@/lib/db'
+import { requireUser } from '@/lib/require-user'
 import { GET, PUT, DELETE } from '@/app/api/assets/[id]/route'
 
 const mockExecute = jest.fn()
-const params = { params: { id: 'asset-1' } }
+const params = { params: Promise.resolve({ id: 'asset-1' }) }
 
 beforeEach(() => {
   jest.clearAllMocks()
@@ -133,9 +137,9 @@ describe('PUT /api/assets/[id]', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 401 when userId is missing', async () => {
-    const { userId, ...rest } = valid
-    const res = await PUT(makeReq(rest), params)
+  it('returns 401 when not authenticated', async () => {
+    ;(requireUser as jest.Mock).mockReturnValueOnce({ ok: false, response: new NextResponse(null, { status: 401 }) })
+    const res = await PUT(makeReq(valid), params)
     expect(res.status).toBe(401)
   })
 
@@ -171,8 +175,9 @@ describe('DELETE /api/assets/[id]', () => {
     body: JSON.stringify(body),
   })
 
-  it('returns 401 when userId is missing', async () => {
-    const res = await DELETE(makeReq({}), params)
+  it('returns 401 when not authenticated', async () => {
+    ;(requireUser as jest.Mock).mockReturnValueOnce({ ok: false, response: new NextResponse(null, { status: 401 }) })
+    const res = await DELETE(makeReq({ userId: 'u1', userName: 'Admin' }), params)
     expect(res.status).toBe(401)
   })
 

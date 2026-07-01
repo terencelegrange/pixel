@@ -9,10 +9,8 @@ const toISO = (v: unknown) =>
   v instanceof Date ? v.toISOString() : v ? String(v) : null;
 
 // GET /api/diagrams/[id]/versions — list all versions (no content)
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {
@@ -37,10 +35,8 @@ export async function GET(
 }
 
 // POST /api/diagrams/[id]/versions — save a new version
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;

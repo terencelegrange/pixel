@@ -4,7 +4,8 @@ import mysql from "mysql2/promise";
 import { requireUser } from "@/lib/require-user";
 
 // GET — list tagged assets for this diagram
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   await setupDatabase();
@@ -21,7 +22,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
 }
 
 // DELETE — remove a specific asset tag (assetId in body)
-export async function DELETE(req: NextRequest, { params }: { params: { id: string } }) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   await setupDatabase();

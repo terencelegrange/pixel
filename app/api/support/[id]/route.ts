@@ -7,10 +7,8 @@ const VALID_STATUSES = ["New", "Acknowledged", "Under Review", "Will Fix", "Will
 type SupportStatus = typeof VALID_STATUSES[number];
 
 // PATCH /api/support/[id] — update status
-export async function PATCH(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PATCH(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {

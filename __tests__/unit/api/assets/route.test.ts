@@ -1,4 +1,4 @@
-import { NextRequest } from 'next/server'
+﻿import { NextRequest, NextResponse } from 'next/server'
 
 jest.mock('@/lib/db', () => ({
   setupDatabase: jest.fn().mockResolvedValue(undefined),
@@ -6,8 +6,12 @@ jest.mock('@/lib/db', () => ({
   resetPool: jest.fn(),
 }))
 jest.mock('@/lib/audit', () => ({ writeAudit: jest.fn().mockResolvedValue(undefined) }))
+jest.mock('@/lib/require-user', () => ({
+  requireUser: jest.fn().mockReturnValue({ ok: true, user: { id: 'u1', name: 'Test User', email: 'test@example.com', role: 'Admin' } }),
+}))
 
 import { getDb } from '@/lib/db'
+import { requireUser } from '@/lib/require-user'
 import { GET, POST } from '@/app/api/assets/route'
 
 const mockExecute = jest.fn()
@@ -40,7 +44,7 @@ const dbAssetRow = {
 describe('GET /api/assets', () => {
   it('returns mapped asset list', async () => {
     mockExecute.mockResolvedValueOnce([[dbAssetRow]])
-    const res = await GET()
+    const res = await GET(new NextRequest('http://localhost/'))
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.assets).toHaveLength(1)
@@ -50,7 +54,7 @@ describe('GET /api/assets', () => {
 
   it('returns empty list when no assets', async () => {
     mockExecute.mockResolvedValueOnce([[]])
-    const res = await GET()
+    const res = await GET(new NextRequest('http://localhost/'))
     expect(res.status).toBe(200)
     const body = await res.json()
     expect(body.assets).toHaveLength(0)
@@ -67,7 +71,7 @@ describe('GET /api/assets', () => {
       capability_names: 'Hosting',
     }
     mockExecute.mockResolvedValueOnce([[row]])
-    const res = await GET()
+    const res = await GET(new NextRequest('http://localhost/'))
     const body = await res.json()
     const asset = body.assets[0]
     expect(asset.departmentIds).toEqual(['d1', 'd2'])
@@ -80,7 +84,7 @@ describe('GET /api/assets', () => {
 
   it('returns 500 when DB throws', async () => {
     mockExecute.mockRejectedValueOnce(new Error('db error'))
-    const res = await GET()
+    const res = await GET(new NextRequest('http://localhost/'))
     expect(res.status).toBe(500)
   })
 })
@@ -121,9 +125,9 @@ describe('POST /api/assets', () => {
     expect(res.status).toBe(400)
   })
 
-  it('returns 401 when userId is missing', async () => {
-    const { userId, ...rest } = valid
-    const res = await POST(makeReq(rest))
+  it('returns 401 when not authenticated', async () => {
+    ;(requireUser as jest.Mock).mockReturnValueOnce({ ok: false, response: new NextResponse(null, { status: 401 }) })
+    const res = await POST(makeReq(valid))
     expect(res.status).toBe(401)
   })
 

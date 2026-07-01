@@ -28,7 +28,7 @@ const email = z
   .email("Must be a valid email address.");
 
 const password = z
-  .string({ required_error: "Password is required." })
+  .string()
   .min(8, "Password must be at least 8 characters.")
   .max(72, "Password must be 72 characters or fewer.");  // bcrypt limit
 
@@ -37,7 +37,7 @@ const password = z
 // ---------------------------------------------------------------------------
 export const LoginSchema = z.object({
   email,
-  password: z.string({ required_error: "Password is required." }).min(1, "Password is required."),
+  password: z.string().min(1, "Password is required."),
 });
 
 export const RegisterSchema = z.object({
@@ -50,7 +50,7 @@ export const RegisterSchema = z.object({
 // Users
 // ---------------------------------------------------------------------------
 const userRole = z.enum(["Admin", "Member", "Viewer"], {
-  errorMap: () => ({ message: "Role must be Admin, Member, or Viewer." }),
+  message: "Role must be Admin, Member, or Viewer.",
 });
 
 export const CreateUserSchema = z.object({
@@ -70,7 +70,7 @@ export const UpdateUserSchema = z.object({
 // Roles
 // ---------------------------------------------------------------------------
 const permissionLevel = z.enum(["read-only", "member", "admin"], {
-  errorMap: () => ({ message: "permissionLevel must be one of: read-only, member, admin." }),
+  message: "permissionLevel must be one of: read-only, member, admin.",
 });
 
 export const CreateRoleSchema = z.object({
@@ -155,7 +155,7 @@ export const UpdateVendorSchema = CreateVendorSchema.partial();
 // ---------------------------------------------------------------------------
 export const CreateSupportSchema = z.object({
   type: z.enum(["Feature Request", "Report Request", "Bug", "Other"], {
-    errorMap: () => ({ message: "Invalid support request type." }),
+    message: "Invalid support request type.",
   }),
   subject: nonEmptyString("Subject", 500),
   description: optionalString(5000),
@@ -164,7 +164,7 @@ export const CreateSupportSchema = z.object({
 export const UpdateSupportStatusSchema = z.object({
   status: z.enum(
     ["New", "Acknowledged", "Under Review", "Will Fix", "Will Not Implement", "Completed"],
-    { errorMap: () => ({ message: "Invalid status value." }) }
+    { message: "Invalid status value." }
   ),
 });
 

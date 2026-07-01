@@ -4,10 +4,8 @@ import { getDb, setupDatabase } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
 
 // GET /api/projects/[id]/assets — list assets linked to project
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {
@@ -50,10 +48,8 @@ export async function GET(
 }
 
 // POST /api/projects/[id]/assets — link an asset
-export async function POST(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {

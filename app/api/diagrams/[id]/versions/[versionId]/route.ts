@@ -9,8 +9,9 @@ const toISO = (v: unknown) =>
 // GET /api/diagrams/[id]/versions/[versionId] — fetch a specific version with content
 export async function GET(
   req: NextRequest,
-  { params }: { params: { id: string; versionId: string } }
+  props: { params: Promise<{ id: string; versionId: string }> }
 ) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {

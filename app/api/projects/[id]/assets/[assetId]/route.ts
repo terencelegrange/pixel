@@ -5,8 +5,9 @@ import { requireUser } from "@/lib/require-user";
 // PATCH /api/projects/[id]/assets/[assetId] — update dependency type or notes
 export async function PATCH(
   req: NextRequest,
-  { params }: { params: { id: string; assetId: string } }
+  props: { params: Promise<{ id: string; assetId: string }> }
 ) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {
@@ -33,8 +34,9 @@ export async function PATCH(
 // DELETE /api/projects/[id]/assets/[assetId] — remove asset link
 export async function DELETE(
   req: NextRequest,
-  { params }: { params: { id: string; assetId: string } }
+  props: { params: Promise<{ id: string; assetId: string }> }
 ) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {

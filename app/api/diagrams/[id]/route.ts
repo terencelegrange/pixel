@@ -8,10 +8,8 @@ const toISO = (v: unknown) =>
   v instanceof Date ? v.toISOString() : v ? String(v) : null;
 
 // GET /api/diagrams/[id] — fetch diagram metadata + latest version content
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {
@@ -51,10 +49,8 @@ export async function GET(
 }
 
 // PUT /api/diagrams/[id] — update metadata only (name, description)
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;
@@ -90,10 +86,8 @@ export async function PUT(
 }
 
 // DELETE /api/diagrams/[id]
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;

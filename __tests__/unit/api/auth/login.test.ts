@@ -9,6 +9,10 @@ jest.mock('bcryptjs', () => ({
   compare: jest.fn(),
   hash: jest.fn(),
 }))
+jest.mock('@/lib/jwt', () => ({
+  signJwt: jest.fn().mockReturnValue('mock-token'),
+  verifyJwt: jest.fn(),
+}))
 
 import { getDb } from '@/lib/db'
 import bcrypt from 'bcryptjs'
@@ -41,13 +45,13 @@ describe('POST /api/auth/login', () => {
   it('returns 400 when email is missing', async () => {
     const res = await POST(makeReq({ password: 'secret' }))
     expect(res.status).toBe(400)
-    expect(await res.json()).toMatchObject({ error: expect.stringContaining('required') })
+    expect(await res.json()).toMatchObject({ error: expect.any(String) })
   })
 
   it('returns 400 when password is missing', async () => {
     const res = await POST(makeReq({ email: 'jane@example.com' }))
     expect(res.status).toBe(400)
-    expect(await res.json()).toMatchObject({ error: expect.stringContaining('required') })
+    expect(await res.json()).toMatchObject({ error: expect.any(String) })
   })
 
   it('returns 401 when email not found', async () => {

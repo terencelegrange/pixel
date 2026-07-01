@@ -4,7 +4,8 @@ import mysql from "mysql2/promise";
 import { randomUUID } from "crypto";
 import { requireUser } from "@/lib/require-user";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   await setupDatabase();
@@ -15,7 +16,8 @@ export async function GET(req: NextRequest, { params }: { params: { id: string }
   return NextResponse.json({ versions: rows });
 }
 
-export async function POST(req: NextRequest, { params }: { params: { id: string } }) {
+export async function POST(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;

@@ -3,7 +3,8 @@ import { getDb, setupDatabase } from "@/lib/db";
 import mysql from "mysql2/promise";
 import { requireUser } from "@/lib/require-user";
 
-export async function GET(req: NextRequest, { params }: { params: { id: string } }) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   await setupDatabase();

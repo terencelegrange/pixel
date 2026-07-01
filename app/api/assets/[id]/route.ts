@@ -9,10 +9,8 @@ const VALID_TYPES: AssetType[] = ["SaaS", "On-Premise", "Hybrid", "Cloud", "Open
 const VALID_STATUSES: LifecycleStatus[] = ["Proposed", "Approved", "In Development", "Production", "Sunset", "Retired"];
 
 // GET /api/assets/[id] — fetch a single asset with aggregated departments
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {
@@ -101,10 +99,8 @@ export async function GET(
 }
 
 // PUT /api/assets/[id] — update an asset
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;
@@ -250,10 +246,8 @@ export async function PUT(
 }
 
 // DELETE /api/assets/[id] — delete an asset and its department links
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;

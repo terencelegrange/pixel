@@ -4,10 +4,8 @@ import { getDb, setupDatabase } from "@/lib/db";
 import { requireUser } from "@/lib/require-user";
 
 // GET /api/assets/[id]/projects — active projects that include this asset
-export async function GET(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function GET(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   try {

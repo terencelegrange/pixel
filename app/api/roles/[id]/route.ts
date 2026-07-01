@@ -8,10 +8,8 @@ const VALID_PERMISSION_LEVELS = ["read-only", "member", "admin"] as const;
 type PermissionLevel = typeof VALID_PERMISSION_LEVELS[number];
 
 // PUT /api/roles/[id]
-export async function PUT(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function PUT(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;
@@ -65,10 +63,8 @@ export async function PUT(
 }
 
 // DELETE /api/roles/[id]
-export async function DELETE(
-  req: NextRequest,
-  { params }: { params: { id: string } }
-) {
+export async function DELETE(req: NextRequest, props: { params: Promise<{ id: string }> }) {
+  const params = await props.params;
   const auth = requireUser(req);
   if (!auth.ok) return auth.response;
   const { user } = auth;
